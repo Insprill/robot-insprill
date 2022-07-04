@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	BotToken = flag.String("token", "", "Bot access token")
+	BotToken        = flag.String("token", "", "Bot access token")
+	FeatureRegistry = []func(){}
 )
 
 func init() {
@@ -32,9 +33,11 @@ func main() {
 		panic(err)
 	}
 
-	//todo: stuff here
+	for i := range FeatureRegistry {
+		FeatureRegistry[i](session)
+	}
 
-	log.Println("Robot Insprill is now running. Press CTRL+C to close.")
+	log.Println(session.State.User.Username + " is now running. Press CTRL+C to close.")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
