@@ -33,7 +33,7 @@ func main() {
 		panic(err)
 	}
 
-	for i := range FeatureRegistry {
+	for i := 0; i < len(FeatureRegistry); i += 2 {
 		FeatureRegistry[i](session)
 	}
 
@@ -41,6 +41,10 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
+
+	for i := 1; i < len(FeatureRegistry); i += 2 {
+		FeatureRegistry[i](session)
+	}
 
 	err = session.Close()
 	if err != nil {
