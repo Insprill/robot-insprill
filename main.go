@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/Insprill/robot-insprill/features"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
@@ -11,7 +12,9 @@ import (
 
 var (
 	BotToken        = flag.String("token", "", "Bot access token")
-	FeatureRegistry = []func(){}
+	FeatureRegistry = []func(*discordgo.Session){
+		features.InitSuggestions, features.TeardownSuggestions,
+	}
 )
 
 func init() {
