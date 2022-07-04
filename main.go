@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	BotToken = *flag.String("token", "", "Bot access token")
+	BotToken = flag.String("token", "", "Bot access token")
 )
 
 func init() {
@@ -18,11 +18,11 @@ func init() {
 }
 
 func main() {
-	if BotToken == "" {
+	if *BotToken == "" {
 		panic("No bot token set.")
 	}
 
-	session, err := discordgo.New("Bot " + BotToken)
+	session, err := discordgo.New("Bot " + *BotToken)
 	if err != nil {
 		panic(err)
 	}
