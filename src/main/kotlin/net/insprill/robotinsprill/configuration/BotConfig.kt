@@ -190,7 +190,9 @@ data class BotConfig(
             val name: String,
             val min: Int?,
             val max: Int?,
-            val inline: Boolean?
+            val inline: Boolean?,
+            val isImage: Boolean?,
+            val optional: Boolean?
         ) {
             fun range(): IntRange {
                 return (min ?: 0)..(max ?: 4000)

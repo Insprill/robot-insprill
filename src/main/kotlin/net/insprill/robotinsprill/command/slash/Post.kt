@@ -33,7 +33,7 @@ class Post(private val robot: RobotInsprill) : SlashCommand() {
                 customId = field.name,
                 label = field.name,
                 builder = {
-                    required = true
+                    required = field.optional != true
                     allowedLength = field.range()
                 }
             )

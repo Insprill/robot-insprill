@@ -25,6 +25,8 @@ import dev.kord.rest.request.KtorRequestException
 import kotlinx.datetime.Clock
 import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.configuration.BotConfig
+import java.net.MalformedURLException
+import java.net.URL
 import java.util.Collections
 
 class FormHandle(val robot: RobotInsprill) {
@@ -58,9 +60,10 @@ class FormHandle(val robot: RobotInsprill) {
             }
         }
         val actionRow = makeInteractions(form)
+        val embed = makeEmbed(interaction, form, invalids)
 
         val message: MessageCreateBuilder.() -> Unit = {
-            embed(makeEmbed(interaction, form, invalids))
+            embed(embed)
 
             if (invalids.isEmpty()) components.add(actionRow)
             else content = "**Uh oh**"
@@ -105,35 +108,50 @@ class FormHandle(val robot: RobotInsprill) {
         return member.getPermissions().contains(Permission.ManageMessages)
     }
 
-    private fun makeEmbed(
+    private suspend fun makeEmbed(
         interaction: ModalSubmitInteraction,
         form: BotConfig.Form,
         invalids: List<BotConfig.Form.Field>
-    ): EmbedBuilder.() -> Unit = {
-        val titleId = form.fields.firstOrNull { it.isTitle == true }?.name
+    ): EmbedBuilder.() -> Unit {
+        val self =  robot.kord.getSelf()
+        val avatar = self.avatar ?: self.defaultAvatar
+        return {
+            val titleId = form.fields.firstOrNull { it.isTitle == true }?.name
 
-        color = form.color
+            color = form.color
 
-        if (invalids.isEmpty()) {
-            title = interaction.textInputs[titleId]?.value
-                ?: interaction.textInputs.values.firstOrNull()?.value
-                    ?: "Submission by ${interaction.user.tag}" // Kotlin :O
+            val imageField = form.fields.firstOrNull { it.isImage == true }
 
-            author = EmbedBuilder.Author().apply {
-                name = interaction.user.tag
-                icon = interaction.user.avatar?.url
+            if (imageField != null) {
+                val raw = interaction.textInputs[imageField.name]?.value
+                try {
+                    image = URL(raw).toString()
+                } catch (ignored: MalformedURLException) {
+                }
             }
-        } else title = "Your form (pls fix)"
 
-        timestamp = Clock.System.now()
+            if (invalids.isEmpty()) {
+                title = interaction.textInputs[titleId]?.value
+                    ?: interaction.textInputs.values.firstOrNull()?.value
+                        ?: "Submission by ${interaction.user.tag}" // Kotlin :O
 
-        footer {
-            text = "${interaction.user.id}"
-        }
+                author = EmbedBuilder.Author().apply {
+                    name = interaction.user.tag
+                    icon = interaction.user.avatar?.url
+                }
+            } else title = "Your form (pls fix)"
 
-        for (field in form.fields.filter { it.isTitle != true }) {
-            field(field.name + (if (invalids.contains(field)) " `FIXME`" else ""), field.inline ?: false) {
-                interaction.textInputs[field.name]?.value ?: "_None provided._"
+            timestamp = Clock.System.now()
+
+            footer = EmbedBuilder.Footer().apply {
+                text = "${interaction.user.id}"
+                icon = avatar.url
+            }
+
+            for (field in form.fields.filter { it.isTitle != true && it.isImage != true }) {
+                field(field.name + (if (invalids.contains(field)) " `FIXME`" else ""), field.inline ?: false) {
+                    interaction.textInputs[field.name]?.value ?: "_None provided._"
+                }
             }
         }
     }
