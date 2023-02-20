@@ -10,10 +10,6 @@ import dev.kord.core.on
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
-import java.io.File
-import java.nio.file.Files
-import java.util.*
-import kotlin.system.exitProcess
 import mu.KLogger
 import mu.KotlinLogging
 import net.insprill.robotinsprill.audit.AuditManager
@@ -21,14 +17,16 @@ import net.insprill.robotinsprill.autoaction.AutoActions
 import net.insprill.robotinsprill.command.CommandManager
 import net.insprill.robotinsprill.command.message.BinFiles
 import net.insprill.robotinsprill.command.message.Google
-import net.insprill.robotinsprill.command.slash.Clear
-import net.insprill.robotinsprill.command.slash.CustomCommand
-import net.insprill.robotinsprill.command.slash.SelectRoles
-import net.insprill.robotinsprill.command.slash.SlashCommand
+import net.insprill.robotinsprill.command.slash.*
 import net.insprill.robotinsprill.configuration.BotConfig
+import net.insprill.robotinsprill.form.FormHandle
 import net.insprill.robotinsprill.ocr.Tesseract
 import net.insprill.robotinsprill.restriction.RestrictionManager
 import net.insprill.robotinsprill.statistic.StatisticManager
+import java.io.File
+import java.nio.file.Files
+import java.util.*
+import kotlin.system.exitProcess
 
 suspend fun main() {
     val logger = KotlinLogging.logger("Robot Insprill")
@@ -46,6 +44,7 @@ suspend fun main() {
         .registerAuditEvents()
         .registerLoginEvents()
         .registerAutoActions()
+        .registerModalEvents()
         .initTesseract()
         .login()
 }
@@ -99,6 +98,7 @@ class RobotInsprill(val logger: KLogger, val kord: Kord) {
                 CustomCommand.buildCommandArray(this.config),
                 Clear(this),
                 SelectRoles(this),
+                Post(this)
             ).flatMap {
                 @Suppress("UNCHECKED_CAST")
                 if (it is Iterable<*>) return@flatMap it as Iterable<SlashCommand> else return@flatMap listOf(it as SlashCommand)
@@ -143,6 +143,10 @@ class RobotInsprill(val logger: KLogger, val kord: Kord) {
             @OptIn(PrivilegedIntent::class)
             intents += Intent.GuildMembers
         }
+    }
+
+    fun registerModalEvents() = apply {
+        FormHandle(this).setupEventHandlers()
     }
 
 }

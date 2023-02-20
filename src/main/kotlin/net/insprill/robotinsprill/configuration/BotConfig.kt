@@ -9,6 +9,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import kotlinx.datetime.Instant
 import net.insprill.robotinsprill.autoaction.MediaType
 import net.insprill.robotinsprill.codebin.BinService
+import net.insprill.robotinsprill.form.FieldSize
 import net.insprill.robotinsprill.restriction.MessageType
 import net.insprill.robotinsprill.statistic.Statistic
 
@@ -19,7 +20,8 @@ data class BotConfig(
     val audit: Audit,
     val statisticChannels: List<StatisticChannel>,
     val autoActions: List<AutoAction>,
-    val restrictedChannels: List<RestrictedChannel>
+    val restrictedChannels: List<RestrictedChannel>,
+    val forms: List<Form>
 ) {
     data class Commands(val message: MessageCmd, val slash: Slash) {
         data class MessageCmd(val binfiles: BinFiles, val googleThat: GoogleThat) {
@@ -27,7 +29,7 @@ data class BotConfig(
             data class GoogleThat(val enabled: Boolean)
         }
 
-        data class Slash(val custom: List<CustomCommand>, val clear: Clear, val selectRoles: SelectRoles) {
+        data class Slash(val custom: List<CustomCommand>, val clear: Clear, val selectRoles: SelectRoles, val post: Post) {
             data class CustomCommand(
                 val name: String,
                 val description: String,
@@ -45,6 +47,8 @@ data class BotConfig(
             ) {
                 data class Roles(val id: Snowflake, val emoji: Emoji?)
             }
+
+            data class Post(val enabled: Boolean)
         }
     }
 
@@ -176,6 +180,22 @@ data class BotConfig(
             return "The PASTEBIN_API_KEY environment variable must be set to do uploads to pastebin!"
         }
         return null
+    }
+
+    data class Form(val name: String, val channel: Snowflake, val color: Color, val completable: Boolean, val fields: List<Field>,) {
+        data class Field(
+            val size: FieldSize?,
+            val isTitle: Boolean?,
+            val isNumber: Boolean?,
+            val name: String,
+            val min: Int?,
+            val max: Int?,
+            val inline: Boolean?
+        ) {
+            fun range(): IntRange {
+                return (min ?: 0)..(max ?: 4000)
+            }
+        }
     }
 }
 
