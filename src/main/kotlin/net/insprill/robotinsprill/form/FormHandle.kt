@@ -165,6 +165,7 @@ class FormHandle(val robot: RobotInsprill) {
             }
             title = strike(embed.title)
             description = strike(embed.description)
+            if (embed.image != null) image = embed.image!!.url
             footer {
                 if (embed.footer?.text != null) text = embed.footer?.text!!
                 icon = embed.footer?.iconUrl
