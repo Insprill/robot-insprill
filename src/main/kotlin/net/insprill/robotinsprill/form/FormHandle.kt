@@ -7,6 +7,7 @@ import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondEphemeral
+import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.updateEphemeralMessage
 import dev.kord.core.entity.Embed
 import dev.kord.core.entity.User
@@ -28,6 +29,7 @@ import net.insprill.robotinsprill.configuration.BotConfig
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.Collections
+import kotlin.math.roundToInt
 
 class FormHandle(val robot: RobotInsprill) {
 
@@ -57,7 +59,7 @@ class FormHandle(val robot: RobotInsprill) {
         val form = robot.config.forms.list.firstOrNull { it.name == interaction.modalId } ?: return // Kotlin :o
         val invalids = form.fields.filter { it.isNumber == true }.filter {
             return@filter !it.range().contains(
-                toNumber(interaction.textInputs[it.name]?.value?.replace(REGEX, ""))
+                toNumber(interaction.textInputs[it.name]?.value?.replace(REGEX, "")) ?: return@filter false
             )
         }
         val actionRow = makeInteractions(form)
@@ -71,12 +73,13 @@ class FormHandle(val robot: RobotInsprill) {
         }
 
         if (invalids.isEmpty()) {
-            interaction.channel.createMessage(builder = message)
+            interaction.respondPublic(message)
         } else {
             val channel = interaction.user.getDmChannelOrNull()
             if (channel == null) interaction.updateEphemeralMessage(message)
             else channel.createMessage(builder = message)
         }
+
     }
 
     private suspend fun handleComponent(interaction: ComponentInteraction) {
@@ -200,11 +203,7 @@ class FormHandle(val robot: RobotInsprill) {
 
     private fun toNumber(str: String?): Int? {
         if (str == null) return null
-        return try {
-            Integer.parseInt(str)
-        } catch (e: NumberFormatException) {
-            null
-        }
+        return (str.toDoubleOrNull())?.roundToInt()
     }
 
 }
