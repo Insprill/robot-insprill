@@ -20,7 +20,7 @@ The following parameters are offered for forms:
 Each field offers:
 
 - `size` - The size of the text box in the modal. `(Optional & SHORT)`
-  - `LONG` - A HTML <textarea> equivalent. 
+  - `LONG` - A HTML `<textarea>` equivalent. 
   - `SHORT` - A short box that doesn't allow new lines.
 - `isTitle` - Should the input of this field be the title of the embed message? Only one field with this true should be specified. If none is specified, the bot will default to `Submission by {DiscordUser#0000}`. (Optional)
 - `name` - The name of this field.
