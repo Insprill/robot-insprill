@@ -16,6 +16,7 @@ class AuditMessages(robot: RobotInsprill, audit: AuditManager) : AuditCategory(r
             return robot.config.audit.ignoreChannels.contains(id)
         }
         event<MessageDeleteEvent>(config.deleted) {
+            if (guildId != robot.config.guildId) return@event;
             if (isIgnored(channelId)) return@event
             send(
                 message?.author,
@@ -25,8 +26,9 @@ class AuditMessages(robot: RobotInsprill, audit: AuditManager) : AuditCategory(r
             )
         }
         event<MessageUpdateEvent>(config.edited) {
+            if (new.guildId.value != robot.config.guildId) return@event;
             if (isIgnored(channelId)) return@event
-            if (new.content.value === null) return@event
+            if (new.content.value == null) return@event
             send(
                 getMessage().author,
                 AuditColor.ORANGE,
@@ -41,6 +43,7 @@ class AuditMessages(robot: RobotInsprill, audit: AuditManager) : AuditCategory(r
             )
         }
         event<MessageCreateEvent>(config.invitePosted) {
+            if (guildId != robot.config.guildId) return@event;
             if (isIgnored(message.channelId)) return@event
             if (!INVITE_PATTERN.containsMatchIn(message.content)) return@event
             send(

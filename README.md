@@ -102,5 +102,6 @@ See [LICENSE][license-url] for more information.
 [issues-url]: https://github.com/Insprill/robot-insprill/issues
 [license-shield]: https://img.shields.io/github/license/Insprill/robot-insprill.svg?style=for-the-badge
 [license-url]: https://github.com/Insprill/robot-insprill/blob/master/LICENSE
-[docs-contributing-url]: https://robot-insprill.rtfd.io/contributing/
-[docs-hosting-url]: https://robot-insprill.rtfd.io/hosting/
+[docs-contributing-url]: https://robot-insprill.readthedocs.io/en/latest/contributing/
+[docs-contributing-url]: https://robot-insprill.readthedocs.io/en/latest/contributing/
+[docs-hosting-url]: https://robot-insprill.readthedocs.io/en/latest/hosting/

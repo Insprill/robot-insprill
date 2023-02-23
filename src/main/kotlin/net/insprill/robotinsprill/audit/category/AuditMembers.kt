@@ -15,18 +15,23 @@ class AuditMembers(robot: RobotInsprill, audit: AuditManager) : AuditCategory(ro
     override fun registerEvents() {
         val config = robot.config.audit.events.members
         event<BanAddEvent>(config.banned) {
+            if (guildId != robot.config.guildId) return@event;
             send(user, AuditColor.RED, "<@${user.id}> was banned.")
         }
         event<BanRemoveEvent>(config.unbanned) {
+            if (guildId != robot.config.guildId) return@event;
             send(user, AuditColor.GREEN, "<@${user.id}> was unbanned.")
         }
         event<MemberJoinEvent>(config.joined) {
+            if (guildId != robot.config.guildId) return@event;
             send(member, AuditColor.GREEN, "<@${member.id}> has joined.")
         }
         event<MemberLeaveEvent>(config.left) {
+            if (guildId != robot.config.guildId) return@event;
             send(user, AuditColor.RED, "<@${user.id}> has left.")
         }
         event<MemberUpdateEvent>(config.updated.enabled) {
+            if (guildId != robot.config.guildId) return@event;
             if (old == null) {
                 send(member, AuditColor.GREEN, "<@${member.id}> updated their profile!")
             } else {
@@ -55,6 +60,7 @@ class AuditMembers(robot: RobotInsprill, audit: AuditManager) : AuditCategory(ro
 
         }
         event<VoiceStateUpdateEvent>(config.voice) {
+            if (state.guildId != robot.config.guildId) return@event;
             if (state.channelId == null) {
                 send(
                     state.getMember(),

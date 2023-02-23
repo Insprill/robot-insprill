@@ -16,6 +16,7 @@ class AutoActions(private val robot: RobotInsprill) {
     }
 
     private suspend fun handle(message: Message) {
+        if (message.getGuildOrNull()?.id != robot.config.guildId) return
         val channel = message.getChannel().parentOrSelf()
         val autoActions = robot.config.autoActions
             .filter { it.bots == message.author?.isBot }

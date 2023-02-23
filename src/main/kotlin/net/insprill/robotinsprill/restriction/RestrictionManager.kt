@@ -17,18 +17,16 @@ class RestrictionManager(val robot: RobotInsprill) {
     }
 
     private suspend fun handle(message: Message) {
-        val restrictedChannels = robot.config.restrictedChannels
+        if (message.getGuildOrNull()?.id != robot.config.guildId) return
+        if (message.author?.isBot == true) return
 
-        if (message.author?.isBot == true)
-            return
-
-        for (channel in restrictedChannels) {
+        for (channel in robot.config.restrictedChannels) {
             if (message.channelId != channel.channelId)
                 return
 
             for (type in MessageType.values()) {
                 if (type.func.invoke(message) && !channel.types.contains(type)) {
-                    val reply = message.reply {message(channel.message)}
+                    val reply = message.reply { message(channel.message) }
                     delay(5000)
                     message.delete()
                     reply.delete()
