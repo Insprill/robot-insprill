@@ -62,7 +62,8 @@ class AuditManager(private val robot: RobotInsprill) {
                 icon = user.avatar?.url
             }
             this.color = color.color
-            this.description = "**$title**\n\n$description"
+            this.description = "**$title**"
+            this.description?.let { this.description += "\n\n$description" }
             this.footer = EmbedBuilder.Footer().apply { text = "User ID: ${user.id.value}" }
             this.timestamp = Clock.System.now()
         }

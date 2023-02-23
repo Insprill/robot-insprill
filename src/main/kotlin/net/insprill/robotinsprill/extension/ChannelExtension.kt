@@ -4,5 +4,6 @@ import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.thread.ThreadChannel
 
 suspend fun MessageChannel.parentOrSelf(): MessageChannel {
-    return if (this is ThreadChannel) this.parent.asChannel() else this
+    if (this !is ThreadChannel) return this
+    return this.getParentOrNull() ?: this
 }
