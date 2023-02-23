@@ -31,6 +31,11 @@ import java.util.Collections
 
 class FormHandle(val robot: RobotInsprill) {
 
+    companion object {
+        @JvmStatic
+        private val REGEX = Regex("[,$€£]")
+    }
+
     fun setupEventHandlers() {
         robot.kord.on<ModalSubmitInteractionCreateEvent> {
             handleForm(interaction)
@@ -41,7 +46,7 @@ class FormHandle(val robot: RobotInsprill) {
         robot.kord.on<MessageCreateEvent> {
             if (message.author?.isBot == true) return@on
             if (hasManageMessage(message.author ?: return@on)) return@on
-            if (robot.config.forms.any { it.channel == message.channelId } )
+            if (robot.config.forms.list.any { it.channel == message.channelId } )
                 message.delete("Form only channel")
         }
     }
@@ -49,15 +54,11 @@ class FormHandle(val robot: RobotInsprill) {
     private suspend fun handleForm(interaction: ModalSubmitInteraction) {
         if (interaction.type != InteractionType.ModalSubmit) return
 
-        val form = robot.config.forms.firstOrNull { it.name == interaction.modalId } ?: return // Kotlin :o
+        val form = robot.config.forms.list.firstOrNull { it.name == interaction.modalId } ?: return // Kotlin :o
         val invalids = form.fields.filter { it.isNumber == true }.filter {
-            try {
-                return@filter !it.range().contains( // just in case smashed in a few more currencies
-                    Integer.parseInt(interaction.textInputs[it.name]?.value?.replace(Regex("[.,$€£]"), ""))
-                )
-            } catch (e: NumberFormatException) {
-                return@filter true
-            }
+            return@filter !it.range().contains(
+                toNumber(interaction.textInputs[it.name]?.value?.replace(REGEX, ""))
+            )
         }
         val actionRow = makeInteractions(form)
         val embed = makeEmbed(interaction, form, invalids)
@@ -110,8 +111,8 @@ class FormHandle(val robot: RobotInsprill) {
 
     private suspend fun makeEmbed(
         interaction: ModalSubmitInteraction,
-        form: BotConfig.Form,
-        invalids: List<BotConfig.Form.Field>
+        form: BotConfig.Forms.Form,
+        invalids: List<BotConfig.Forms.Form.Field>
     ): EmbedBuilder.() -> Unit {
         val self =  robot.kord.getSelf()
         val avatar = self.avatar ?: self.defaultAvatar
@@ -178,7 +179,7 @@ class FormHandle(val robot: RobotInsprill) {
         }
     }
 
-    private fun makeInteractions(form: BotConfig.Form?): ActionRowBuilder {
+    private fun makeInteractions(form: BotConfig.Forms.Form?): ActionRowBuilder {
         val actionRow = ActionRowBuilder()
 
         actionRow.interactionButton(style = ButtonStyle.Danger, customId = "abandon", builder = {
@@ -195,6 +196,15 @@ class FormHandle(val robot: RobotInsprill) {
             })
 
         return actionRow
+    }
+
+    private fun toNumber(str: String?): Int? {
+        if (str == null) return null
+        return try {
+            Integer.parseInt(str)
+        } catch (e: NumberFormatException) {
+            null
+        }
     }
 
 }
