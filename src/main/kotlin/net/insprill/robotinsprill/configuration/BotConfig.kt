@@ -6,12 +6,15 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.common.entity.optional.OptionalBoolean
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import kotlinx.datetime.Instant
 import net.insprill.robotinsprill.autoaction.MediaType
 import net.insprill.robotinsprill.codebin.BinService
 import net.insprill.robotinsprill.form.FieldSize
 import net.insprill.robotinsprill.restriction.MessageType
 import net.insprill.robotinsprill.statistic.Statistic
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 data class BotConfig(
     val guildId: Snowflake,
@@ -21,7 +24,7 @@ data class BotConfig(
     val statisticChannels: List<StatisticChannel>,
     val autoActions: List<AutoAction>,
     val restrictedChannels: List<RestrictedChannel>,
-    val forms: List<Form>
+    val forms: Forms
 ) {
     data class Commands(val message: MessageCmd, val slash: Slash) {
         data class MessageCmd(val binfiles: BinFiles, val googleThat: GoogleThat) {
@@ -29,7 +32,12 @@ data class BotConfig(
             data class GoogleThat(val enabled: Boolean)
         }
 
-        data class Slash(val custom: List<CustomCommand>, val clear: Clear, val selectRoles: SelectRoles, val post: Post) {
+        data class Slash(
+            val custom: List<CustomCommand>,
+            val clear: Clear,
+            val selectRoles: SelectRoles,
+            val post: Post
+        ) {
             data class CustomCommand(
                 val name: String,
                 val description: String,
@@ -102,6 +110,14 @@ data class BotConfig(
     )
 
     data class Message(val text: String?, val embeds: List<Embed>?) {
+
+        fun toBuilder(): MessageCreateBuilder.() -> Unit {
+            return {
+                content = text
+                if (embeds.isNotEmpty()) embeds.addAll(embeds()!!)
+            }
+        }
+
         data class Embed(
             var author: EmbedAuthor?,
             val title: String?,
@@ -174,7 +190,9 @@ data class BotConfig(
     ) {
         data class Action(val pattern: Regex, val reactions: Set<Emoji>?, val responses: List<Message>?)
     }
-    data class RestrictedChannel (val channelId: Snowflake, val message: Message, val types: List<MessageType>)
+
+    data class RestrictedChannel(val channelId: Snowflake, val message: Message, val types: List<MessageType>)
+
     fun validate(): String? {
         if (codebin.upload == BinService.PASTEBIN && System.getenv("PASTEBIN_API_KEY") == null) {
             return "The PASTEBIN_API_KEY environment variable must be set to do uploads to pastebin!"
@@ -182,20 +200,41 @@ data class BotConfig(
         return null
     }
 
-    data class Form(val name: String, val channel: Snowflake, val color: Color, val completable: Boolean, val fields: List<Field>,) {
-        data class Field(
-            val size: FieldSize?,
-            val isTitle: Boolean?,
-            val isNumber: Boolean?,
+    data class Forms(val list: List<Form>, val messages: Map<String, Message>) {
+        // TODO rewrite doc
+        @OptIn(ExperimentalContracts::class)
+        fun findMessage(key: String, default: String?): Message? {
+            contract {
+                returnsNotNull() implies (default != null)
+            }
+
+            val def = if (default != null) Message(default, null) else null
+            val msg = messages[key]?.takeIf { it.text?.isNotBlank() == true }
+
+            return msg ?: def
+        }
+
+        data class Form(
             val name: String,
-            val min: Int?,
-            val max: Int?,
-            val inline: Boolean?,
-            val isImage: Boolean?,
-            val optional: Boolean?
+            val channel: Snowflake,
+            val color: Color,
+            val completable: Boolean,
+            val fields: List<Field>,
         ) {
-            fun range(): IntRange {
-                return (min ?: 0)..(max ?: 4000)
+            data class Field(
+                val size: FieldSize?,
+                val isTitle: Boolean?,
+                val isNumber: Boolean?,
+                val name: String,
+                val min: Int?,
+                val max: Int?,
+                val inline: Boolean?,
+                val isImage: Boolean?,
+                val optional: Boolean?
+            ) {
+                fun range(): IntRange {
+                    return (min ?: 0)..(max ?: 4000)
+                }
             }
         }
     }

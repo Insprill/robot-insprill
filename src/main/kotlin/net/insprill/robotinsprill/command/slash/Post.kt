@@ -2,25 +2,28 @@ package net.insprill.robotinsprill.command.slash
 
 import dev.kord.common.entity.TextInputStyle
 import dev.kord.core.behavior.interaction.modal
-import dev.kord.core.behavior.interaction.response.respond
+import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.rest.builder.component.ActionRowBuilder
-import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
-import dev.kord.rest.builder.interaction.channel
 import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.form.FieldSize
 
 class Post(private val robot: RobotInsprill) : SlashCommand() {
+
+    override val name: String
+        get() = "post"
     override val description: String
         get() = "Post in the current channel"
+    override val enabled: Boolean
+        get() = robot.config.commands.slash.post.enabled
 
     override suspend fun execute(context: ChatInputCommandInteractionCreateEvent) {
-        val form =
-            robot.config.forms.firstOrNull() { it.channel == (context.interaction.command.channels["target"] ?: context.interaction.channel).id }
+        val form = robot.config.forms.list.firstOrNull() {
+            it.channel == context.interaction.channelId
+        }
 
         if (form == null) {
-            context.interaction.deferEphemeralResponse()
-                .respond { content = "There is not forms to fill out here u dummy" }
+            context.interaction.respondEphemeral(robot.config.forms.findMessage("invalid-channel", "That ain't no post channel u dummy")!!.toBuilder())
             return
         }
 
@@ -45,16 +48,5 @@ class Post(private val robot: RobotInsprill) : SlashCommand() {
         }
 
         // Annnd wait for the submission event
-    }
-
-    override val name: String
-        get() = "post"
-    override val enabled: Boolean
-        get() = robot.config.commands.slash.post.enabled
-
-    override fun setup(builder: ChatInputCreateBuilder) {
-        builder.apply {
-            channel("target", "Where would you like to post?")
-        }
     }
 }
