@@ -4,11 +4,10 @@ import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.InteractionType
 import dev.kord.common.entity.Permission
-import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.behavior.interaction.updateEphemeralMessage
+import dev.kord.core.behavior.interaction.response.createEphemeralFollowup
 import dev.kord.core.entity.Embed
 import dev.kord.core.entity.User
 import dev.kord.core.entity.component.ButtonComponent
@@ -20,7 +19,6 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.message.EmbedBuilder
-import dev.kord.rest.builder.message.create.MessageCreateBuilder
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.datetime.Clock
@@ -28,7 +26,7 @@ import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.configuration.BotConfig
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.Collections
+import java.util.*
 import kotlin.math.roundToInt
 
 class FormHandle(val robot: RobotInsprill) {
@@ -57,27 +55,27 @@ class FormHandle(val robot: RobotInsprill) {
         if (interaction.type != InteractionType.ModalSubmit) return
 
         val form = robot.config.forms.list.firstOrNull { it.name == interaction.modalId } ?: return // Kotlin :o
-        val invalids = form.fields.filter { it.isNumber == true }.filter {
-            return@filter !it.range().contains(
-                toNumber(interaction.textInputs[it.name]?.value?.replace(REGEX, "")) ?: return@filter false
+        val invalids = form.fields.filter { it.isNumber == true }.filterNot {
+            return@filterNot it.range().contains(
+                toNumber(
+                    interaction.textInputs[it.name]?.value?.replace(REGEX, "")
+                ) ?: return@filterNot false
             )
         }
         val actionRow = makeInteractions(form)
         val embed = makeEmbed(interaction, form, invalids)
 
-        val message: MessageCreateBuilder.() -> Unit = {
-            embed(embed)
-
-            if (invalids.isEmpty()) components.add(actionRow)
-            else content = "**Uh oh**"
-        }
-
-        if (invalids.isEmpty()) {
-            interaction.respondPublic(message)
-        } else {
-            val channel = interaction.user.getDmChannelOrNull()
-            if (channel == null) interaction.updateEphemeralMessage(message)
-            else channel.createMessage(builder = message)
+        if (invalids.isEmpty()) { // Everything is good to go
+            interaction.respondPublic {
+                embed(embed)
+                components.add(actionRow)
+            }
+        } else { // Needs fixing (number is malformed, etc.)
+            interaction
+                .respondEphemeral(robot.config.forms.findMessage("malformed-input", "Pls fix!")!!.toBuilder())
+                .createEphemeralFollowup {
+                    embed(embed)
+                }
         }
 
     }
