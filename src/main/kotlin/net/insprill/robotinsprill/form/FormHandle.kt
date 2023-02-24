@@ -177,6 +177,7 @@ class FormHandle(val robot: RobotInsprill) {
                     strike(field.value)
                 }
             }
+            timestamp = embed.timestamp
         }
     }
 
