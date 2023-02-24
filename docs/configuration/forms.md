@@ -9,7 +9,12 @@ Through the `/post` command, users can post a submission to either the current c
 
 ## Configuration
 
-The following parameters are offered for forms:
+The outer most `forms` key has the following:
+- `messages` - See [messages](props/messages.md).
+  - `invalid-channel` - Sent when user tries to use `/post` in a non-post channel.
+- `list` - See below:
+
+The following parameters are offered for each **individual** form:
 
 - `name` - The name that will display on the top of the modal.
 - `channel` - The id of the specified channel.
@@ -32,24 +37,28 @@ Each field offers:
 ### Example
 ```yaml
 forms:
-    - channel: 759935175060094976
-      name: "Paid Requests"
-      color: "#000000"
-      completable: true
-      fields:
-          - name: Subject
-            min: 2
-            max: 24
-            is-title: true
-          - name: Description
-            size: LONG
-          - name: Budget (USD)
-            is-number: true
-            min: 1
-            max: 1000
-          - name: Example picture
-            optional: true
-            is-image: true
+    messages:
+        invalid-channel:
+            text: "Where you trying to post u dummy?"
+    list:
+        - channel: 759935175060094976
+          name: "Paid Requests"
+          color: "#000000"
+          completable: true
+          fields:
+              - name: Subject
+                min: 2
+                max: 24
+                is-title: true
+              - name: Description
+                size: LONG
+              - name: Budget (USD)
+                is-number: true
+                min: 1
+                max: 1000
+              - name: Example picture
+                optional: true
+                is-image: true
 ```
 
 ### Output
