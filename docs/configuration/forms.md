@@ -4,7 +4,7 @@
 
 When a channel id is set in a form specified in your [config](index.md), it is considered a Form channel by the bot. Any messages sent by members without the message manage permission will be automatically deleted.
 
-Through the `/post` command, users can post a submission to either the current channel, or the channel specified by the `target` parameter. Afterwards, a modal will popup for the user. After filling in required fields, a message will be sent, accompanied by the abandon button and, if completable, the complete button. These two button components can be used by either the user, or another user with the message manage [permission](../discord/perms.md). 
+Through the `/post` command, users can post a submission to either the current channel or the channel specified by the `target` parameter—afterward, a modal will popup for the user. After filling in the required fields, a message will be sent, accompanied by the abandon button and, if completable, the complete button. These two button components can be used by either the user or another user with the message manage permission.
 
 
 ## Configuration
