@@ -220,6 +220,7 @@ data class BotConfig(
             val color: Color,
             val completable: Boolean,
             val fields: List<Field>,
+            val addContact: Boolean?
         ) {
 
             fun getInputFields(): List<Field> {
@@ -230,9 +231,13 @@ data class BotConfig(
                 return fields.filter { it.isPostSubmission == true }
             }
 
+            fun getDisplayFields(): List<Field> {
+                return fields.filterNot { it.isImage == true }
+            }
+
             data class Field(
                 val size: FieldSize?,
-                val isTitle: Boolean?,
+                val isEmbedTitle: Boolean?,
                 val isNumber: Boolean?,
                 val name: String,
                 val min: Int?,

@@ -7,10 +7,7 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.createEphemeralFollowup
 import dev.kord.core.entity.Embed
 import dev.kord.core.entity.User
-import dev.kord.core.entity.component.ButtonComponent
-import dev.kord.core.entity.component.Component
-import dev.kord.core.entity.component.SelectMenuComponent
-import dev.kord.core.entity.component.UserSelectComponent
+import dev.kord.core.entity.component.*
 import dev.kord.core.entity.interaction.ComponentInteraction
 import dev.kord.core.entity.interaction.ModalSubmitInteraction
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
@@ -66,7 +63,8 @@ class FormHandle(val robot: RobotInsprill) {
         }
         val buttons = makeButtons(form, false)
         val inputs = makeInputs(form)
-        val embed = makeEmbed(interaction.user, interaction.textInputs, form, invalids)
+        val embed =
+            makeEmbed(interaction.user, interaction.textInputs, form, MutableList(invalids.size) { invalids[it] })
 
         if (invalids.isEmpty()) { // Everything is good to go
             interaction.respondPublic {
@@ -102,6 +100,7 @@ class FormHandle(val robot: RobotInsprill) {
                 interaction.message.delete("Abandoned by ${interaction.user.tag}")
             } catch (ignored: KtorRequestException) {
             }
+
             "complete" -> {
                 interaction.message.edit {
                     content = "**Completed sail**"
@@ -109,6 +108,7 @@ class FormHandle(val robot: RobotInsprill) {
                     components = Collections.singletonList(makeButtons(null, false))
                 }
             }
+
             "reset" -> {
                 val embedBuilder = editEmbed(embed) { it ?: "" }.apply {
                     for (field in form!!.getPostSubmissionFields()) {
@@ -139,8 +139,16 @@ class FormHandle(val robot: RobotInsprill) {
 
         val embedBuilder = editEmbed(embed) { it ?: "" }.apply {
             val old = fields.firstOrNull { it.name == input.data.customId.value } ?: return
+            val index = fields.indexOf(old)
+
+            val newField = EmbedBuilder.Field().apply {
+                name = input.data.customId.value ?: return
+                inline = old.inline == true
+                value = "<@${memberData?.userId}>"
+            }
+
             fields.remove(old)
-            field(input.data.customId.value ?: return, old.inline == true) { "<@${memberData?.userId}>" }
+            fields.add(index, newField)
         }
 
         interaction.message.edit {
@@ -158,22 +166,22 @@ class FormHandle(val robot: RobotInsprill) {
 
     private suspend fun makeEmbed(
         user: User,
-        textInputs: Map<String, Component>,
+        textInputs: Map<String, TextInputComponent>,
         form: BotConfig.Forms.Form,
-        invalids: List<BotConfig.Forms.Form.Field>
+        invalids: MutableList<BotConfig.Forms.Form.Field>
     ): EmbedBuilder.() -> Unit {
         val self = robot.kord.getSelf()
         val avatar = self.avatar ?: self.defaultAvatar
         return {
-            val titleId = form.fields.firstOrNull { it.isTitle == true }?.name
+            val titleId = form.fields.firstOrNull { it.isEmbedTitle == true }?.name
 
             color = form.color
 
             val imageField = form.fields.firstOrNull { it.isImage == true }
 
             if (imageField != null) {
-                val raw = textInputs[imageField.name]?.data?.value?.value ?: ""
-                try {
+                val raw = textInputs[imageField.name]?.value ?: ""
+                if (raw.isNotBlank()) try {
                     image = URL(raw).toString()
                 } catch (ignored: MalformedURLException) {
                 }
@@ -197,11 +205,13 @@ class FormHandle(val robot: RobotInsprill) {
                 icon = avatar.url
             }
 
-            for (field in form.fields.filter { it.isTitle != true && it.isImage != true }) {
+            for (field in form.getDisplayFields()) {
                 field(field.name + (if (invalids.contains(field)) " `FIXME`" else ""), field.inline ?: false) {
-                    textInputs[field.name]?.data?.value?.value ?: "_None._"
+                    textInputs[field.name]?.value ?: "_None._"
                 }
             }
+
+            if (form.addContact == true) field("Contact", false) { user.mention }
         }
     }
 
@@ -243,7 +253,9 @@ class FormHandle(val robot: RobotInsprill) {
                 emoji = DiscordPartialEmoji(name = "✔️")
             })
 
-        if (form?.getPostSubmissionFields()?.isNotEmpty() == true) actionRow.interactionButton(style = ButtonStyle.Secondary, customId = "reset") {
+        if (form?.getPostSubmissionFields()
+                ?.isNotEmpty() == true
+        ) actionRow.interactionButton(style = ButtonStyle.Secondary, customId = "reset") {
             label = "Redo ship"
             disabled = canRedo == false
         }
