@@ -29,7 +29,7 @@ class Post(private val robot: RobotInsprill) : SlashCommand() {
 
         val builders = ArrayList<ActionRowBuilder>()
 
-        for (field in form.fields) {
+        for (field in form.getInputFields()) {
             val builder = ActionRowBuilder()
             builder.textInput(
                 style = if (field.size == FieldSize.LONG) TextInputStyle.Paragraph else TextInputStyle.Short,

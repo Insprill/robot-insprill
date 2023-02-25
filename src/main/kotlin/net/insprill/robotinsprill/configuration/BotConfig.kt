@@ -221,6 +221,15 @@ data class BotConfig(
             val completable: Boolean,
             val fields: List<Field>,
         ) {
+
+            fun getInputFields(): List<Field> {
+                return fields.filterNot { it.isPostSubmission == true }
+            }
+
+            fun getPostSubmissionFields(): List<Field> {
+                return fields.filter { it.isPostSubmission == true }
+            }
+
             data class Field(
                 val size: FieldSize?,
                 val isTitle: Boolean?,
@@ -230,7 +239,8 @@ data class BotConfig(
                 val max: Int?,
                 val inline: Boolean?,
                 val isImage: Boolean?,
-                val optional: Boolean?
+                val optional: Boolean?,
+                val isPostSubmission: Boolean?
             ) {
                 fun range(): IntRange {
                     return (min ?: 0)..(max ?: 4000)
