@@ -125,5 +125,5 @@ restricted-channels: [ ]
 #      text: |-
 #        This channel is restricted to members with the role `@Train People`.
 #    types:
-#      - TEXT
 #      - IMAGE
+#      - VIDEO

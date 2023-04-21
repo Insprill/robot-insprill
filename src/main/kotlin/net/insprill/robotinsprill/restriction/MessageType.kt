@@ -2,9 +2,9 @@ package net.insprill.robotinsprill.restriction
 
 import dev.kord.core.entity.Message
 
-enum class MessageType(val func: (Message) -> Boolean) {
+enum class MessageType(val doesContain: (Message) -> Boolean) {
     TEXT({ message ->
-        message.content.isNotEmpty() && !LINK.func.invoke(message)
+        message.content.isNotEmpty() && !LINK.doesContain.invoke(message)
     }),
     IMAGE({ message ->
         message.attachments.isNotEmpty() && message.attachments.all { it.isImage }
@@ -22,6 +22,6 @@ enum class MessageType(val func: (Message) -> Boolean) {
         }
     }),
     ATTACHMENT({ message ->
-        !(IMAGE.func.invoke(message) || VIDEO.func.invoke(message)) && message.attachments.isNotEmpty()
+        !(IMAGE.doesContain.invoke(message) || VIDEO.doesContain.invoke(message)) && message.attachments.isNotEmpty()
     }),
 }

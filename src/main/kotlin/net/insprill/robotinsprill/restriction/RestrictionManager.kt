@@ -4,8 +4,10 @@ import dev.kord.core.behavior.reply
 import dev.kord.core.entity.Message
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
+import java.util.EnumSet
 import kotlinx.coroutines.delay
 import net.insprill.robotinsprill.RobotInsprill
+import net.insprill.robotinsprill.configuration.BotConfig
 import net.insprill.robotinsprill.extension.message
 
 class RestrictionManager(val robot: RobotInsprill) {
@@ -24,16 +26,18 @@ class RestrictionManager(val robot: RobotInsprill) {
             if (message.channelId != channel.channelId)
                 return
 
-            for (type in MessageType.values()) {
-                if (type.func.invoke(message) && !channel.types.contains(type)) {
-                    val reply = message.reply { message(channel.message) }
-                    delay(5000)
-                    message.delete()
-                    reply.delete()
-                    return
-                }
+            val containedTypes = EnumSet.allOf(MessageType::class.java).filter { it.doesContain.invoke(message) }
+            if (channel.types.none { containedTypes.contains(it) }) {
+                deleteWithResponse(message, channel.message)
             }
         }
+    }
+
+    private suspend fun deleteWithResponse(message: Message, response: BotConfig.Message) {
+        val reply = message.reply { message(response) }
+        delay(5000)
+        message.delete()
+        reply.delete()
     }
 
 }

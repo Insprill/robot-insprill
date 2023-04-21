@@ -5,5 +5,5 @@ import dev.kord.core.entity.channel.thread.ThreadChannel
 
 suspend fun MessageChannel.parentOrSelf(): MessageChannel {
     if (this !is ThreadChannel) return this
-    return this.getParentOrNull() ?: this
+    return this.getParentOrNull()?.id?.let { this.guild.getChannelOrNull(it) } as? MessageChannel ?: this
 }
