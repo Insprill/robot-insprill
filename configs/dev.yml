@@ -26,6 +26,8 @@ commands:
         - id: 1072035568663408640
           emoji:
             name: 🛒
+    post:
+      enabled: true
     custom:
       - name: custom-embed-command
         description: A custom embed command defined in the config
@@ -127,3 +129,27 @@ restricted-channels: [ ]
 #    types:
 #      - IMAGE
 #      - VIDEO
+
+forms:
+  messages:
+    invalid-channel:
+      text: "You can only use this command in form channels!"
+  list: [ ]
+#    - channel: 759935175060094976
+#      name: "Paid Requests"
+#      color: "#000000"
+#      completable: true
+#      fields:
+#        - name: Subject
+#          min: 2
+#          max: 24
+#          is-title: true
+#        - name: Description
+#          size: LONG
+#        - name: Budget (USD)
+#          is-number: true
+#          min: 1
+#          max: 1000
+#        - name: Example picture
+#          optional: true
+#          is-image: true

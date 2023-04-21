@@ -39,7 +39,7 @@ Each field offers:
 forms:
     messages:
         invalid-channel:
-            text: "Where you trying to post u dummy?"
+            text: "You can only use this command in form channels!"
     list:
         - channel: 759935175060094976
           name: "Paid Requests"

@@ -45,6 +45,8 @@ commands:
           emoji:
             name: VSC
             id: 800914318463205386
+    post:
+      enabled: true
     custom:
       - name: added
         description: Show Patrons how to access the GitHub
@@ -648,6 +650,30 @@ restricted-channels:
       - VIDEO
       - LINK
       - ATTACHMENT
+
+forms:
+  messages:
+    invalid-channel:
+      text: "You can only use this command in form channels!"
+  list:
+    - channel: 687727293980082176
+      name: "Paid Developer Requests"
+      color: "#000000"
+      completable: true
+      fields:
+        - name: Subject
+          min: 2
+          max: 24
+          is-title: true
+        - name: Description
+          size: LONG
+        - name: Budget (USD)
+          is-number: true
+          min: 1
+          max: 1000
+        - name: Example picture
+          optional: true
+          is-image: true
 
 codebin:
   upload: LUCKO_PASTE
