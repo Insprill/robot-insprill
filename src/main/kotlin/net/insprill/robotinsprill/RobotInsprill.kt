@@ -20,16 +20,16 @@ import net.insprill.robotinsprill.autoaction.AutoActions
 import net.insprill.robotinsprill.command.CommandManager
 import net.insprill.robotinsprill.command.message.BinFiles
 import net.insprill.robotinsprill.command.message.Google
-import net.insprill.robotinsprill.command.slash.*
+import net.insprill.robotinsprill.command.slash.Clear
+import net.insprill.robotinsprill.command.slash.CustomCommand
+import net.insprill.robotinsprill.command.slash.Post
+import net.insprill.robotinsprill.command.slash.SelectRoles
+import net.insprill.robotinsprill.command.slash.SlashCommand
 import net.insprill.robotinsprill.configuration.BotConfig
 import net.insprill.robotinsprill.form.FormHandle
 import net.insprill.robotinsprill.ocr.Tesseract
 import net.insprill.robotinsprill.restriction.RestrictionManager
 import net.insprill.robotinsprill.statistic.StatisticManager
-import java.io.File
-import java.nio.file.Files
-import java.util.*
-import kotlin.system.exitProcess
 
 suspend fun main() {
     val logger = KotlinLogging.logger("Robot Insprill")

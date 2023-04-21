@@ -18,12 +18,17 @@ class Post(private val robot: RobotInsprill) : SlashCommand() {
         get() = robot.config.commands.slash.post.enabled
 
     override suspend fun execute(context: ChatInputCommandInteractionCreateEvent) {
-        val form = robot.config.forms.list.firstOrNull() {
+        val form = robot.config.forms.list.firstOrNull {
             it.channel == context.interaction.channelId
         }
 
         if (form == null) {
-            context.interaction.respondEphemeral(robot.config.forms.findMessage("invalid-channel", "That ain't no post channel u dummy")!!.toBuilder())
+            context.interaction.respondEphemeral(
+                robot.config.forms.findMessage(
+                    "invalid-channel",
+                    "That ain't no post channel u dummy"
+                )!!.toBuilder()
+            )
             return
         }
 

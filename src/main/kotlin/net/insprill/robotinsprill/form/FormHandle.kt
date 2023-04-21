@@ -1,13 +1,19 @@
 package net.insprill.robotinsprill.form
 
-import dev.kord.common.entity.*
+import dev.kord.common.entity.ButtonStyle
+import dev.kord.common.entity.DiscordPartialEmoji
+import dev.kord.common.entity.InteractionType
+import dev.kord.common.entity.Permission
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.createEphemeralFollowup
 import dev.kord.core.entity.Embed
 import dev.kord.core.entity.User
-import dev.kord.core.entity.component.*
+import dev.kord.core.entity.component.ButtonComponent
+import dev.kord.core.entity.component.SelectMenuComponent
+import dev.kord.core.entity.component.TextInputComponent
+import dev.kord.core.entity.component.UserSelectComponent
 import dev.kord.core.entity.interaction.ComponentInteraction
 import dev.kord.core.entity.interaction.ModalSubmitInteraction
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
@@ -18,14 +24,15 @@ import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.request.KtorRequestException
+import java.net.MalformedURLException
+import java.net.URL
+import java.util.Arrays
+import java.util.Collections
+import java.util.function.Function
+import kotlin.math.roundToInt
 import kotlinx.datetime.Clock
 import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.configuration.BotConfig
-import java.net.MalformedURLException
-import java.net.URL
-import java.util.*
-import java.util.function.Function
-import kotlin.math.roundToInt
 
 class FormHandle(val robot: RobotInsprill) {
 
