@@ -49,6 +49,7 @@ nav:
       - Automatic Actions: configuration/autoactions.md
       - Statistic Channels: configuration/statchannels.md
       - Restricted Channels: configuration/channelrestrictions.md
+      - Forms: configuration/forms.md
   - Discord:
       - Permissions: discord/perms.md
   - Contributing:
