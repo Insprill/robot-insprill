@@ -12,6 +12,7 @@ Through the `/post` command, users can post a submission to either the current c
 The outer most `forms` key has the following:
 - `messages` - See [messages](props/messages.md).
   - `invalid-channel` - Sent when user tries to use `/post` in a non-post channel.
+  - `malformed-input` - Sent with the form modal input when user entered illegal content.
 - `list` - See below:
 
 The following parameters are offered for each **individual** form:
@@ -38,29 +39,31 @@ Each field offers:
 ### Example
 ```yaml
 forms:
-    messages:
-        invalid-channel:
-            text: "You can only use this command in form channels!"
-    list:
-        - channel: 759935175060094976
-          name: "Paid Requests"
-          color: "#000000"
-          completable: true
-          forms-only: true
-          fields:
-              - name: Subject
-                min: 2
-                max: 24
-                is-title: true
-              - name: Description
-                size: LONG
-              - name: Budget (USD)
-                is-number: true
-                min: 1
-                max: 1000
-              - name: Example picture
-                optional: true
-                is-image: true
+  messages:
+    invalid-channel:
+      text: "You can only use this command in form channels!"
+      malformed-input:
+        text: "Hey! Fix ye stuff!"
+  list:
+    - channel: 759935175060094976
+      name: "Paid Requests"
+      color: "#000000"
+      completable: true
+      forms-only: true
+      fields:
+        - name: Subject
+          min: 2
+          max: 24
+          is-title: true
+        - name: Description
+          size: LONG
+        - name: Budget (USD)
+          is-number: true
+          min: 1
+          max: 1000
+        - name: Example picture
+          optional: true
+          is-image: true
 ```
 
 ### Output
