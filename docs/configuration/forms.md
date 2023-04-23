@@ -20,6 +20,7 @@ The following parameters are offered for each **individual** form:
 - `channel` - The id of the specified channel.
 - `color` - The embed color of the final message.
 - `completeable` - If the submission can be completable by the user.
+- `forms-only` - Should the bot delete all user messages (not including users with MESSAGE MANAGE permission)
 - `fields` - See below.
 
 Each field offers:
@@ -45,6 +46,7 @@ forms:
           name: "Paid Requests"
           color: "#000000"
           completable: true
+          forms-only: true
           fields:
               - name: Subject
                 min: 2

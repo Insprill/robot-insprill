@@ -200,7 +200,7 @@ data class BotConfig(
         return null
     }
 
-    data class Forms(val list: List<Form>, val messages: Map<String, Message>) {
+    data class Forms(val list: List<Form>, val messages: Map<String, Message>?) {
         // TODO rewrite doc
         @OptIn(ExperimentalContracts::class)
         fun findMessage(key: String, default: String?): Message? {
@@ -209,6 +209,9 @@ data class BotConfig(
             }
 
             val def = if (default != null) Message(default, null) else null
+
+            if (messages == null) return def
+
             val msg = messages[key]?.takeIf { it.text?.isNotBlank() == true }
 
             return msg ?: def
@@ -220,7 +223,8 @@ data class BotConfig(
             val color: Color,
             val completable: Boolean,
             val fields: List<Field>,
-            val addContact: Boolean?
+            val addContact: Boolean?,
+            val formsOnly: Boolean?
         ) {
 
             fun getInputFields(): List<Field> {

@@ -52,7 +52,7 @@ class FormHandle(val robot: RobotInsprill) {
         robot.kord.on<MessageCreateEvent> {
             if (message.author?.isBot == true) return@on
             if (hasManageMessage(message.author ?: return@on)) return@on
-            if (robot.config.forms.list.any { it.channel == message.channelId })
+            if (robot.config.forms.list.any { it.channel == message.channelId && it.formsOnly == true })
                 message.delete("Form only channel")
         }
     }
