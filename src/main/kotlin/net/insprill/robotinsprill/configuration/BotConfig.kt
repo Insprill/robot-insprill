@@ -201,7 +201,7 @@ data class BotConfig(
     }
 
     data class Forms(val list: List<Form>, val messages: Map<String, Message>?) {
-        // TODO rewrite doc
+
         @OptIn(ExperimentalContracts::class)
         fun findMessage(key: String, default: String?): Message? {
             contract {
