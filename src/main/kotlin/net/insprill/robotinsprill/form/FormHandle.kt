@@ -272,9 +272,9 @@ class FormHandle(val robot: RobotInsprill) {
 
     private fun makeInputs(form: BotConfig.Forms.Form?): ActionRowBuilder? {
         if (form?.getPostSubmissionFields()?.isEmpty() == true) return null
-        val actionRow = ActionRowBuilder()
+        if (form == null) return null
 
-        if (form == null) return actionRow
+        val actionRow = ActionRowBuilder()
 
         for (field in form.getPostSubmissionFields()) {
             actionRow.userSelect(field.name)
