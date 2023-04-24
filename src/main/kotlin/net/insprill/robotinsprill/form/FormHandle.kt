@@ -77,7 +77,7 @@ class FormHandle(val robot: RobotInsprill) {
             interaction.respondPublic {
                 embed(embed)
                 components.add(buttons)
-                components.add(inputs)
+                if (inputs != null) components.add(inputs)
             }
         } else { // Needs fixing (number is malformed, etc.)
             interaction
@@ -270,7 +270,8 @@ class FormHandle(val robot: RobotInsprill) {
         return actionRow
     }
 
-    private fun makeInputs(form: BotConfig.Forms.Form?): ActionRowBuilder {
+    private fun makeInputs(form: BotConfig.Forms.Form?): ActionRowBuilder? {
+        if (form?.getPostSubmissionFields()?.isEmpty() == true) return null
         val actionRow = ActionRowBuilder()
 
         if (form == null) return actionRow
