@@ -337,6 +337,12 @@ commands:
         description: Ask about your actual problem, not your attempted solution.
         response:
           text: https://xyproblem.info/
+      - name: dry
+        description: Don't Repeat Yourself
+        response:
+          text: |-
+            Make sure to keep your code DRY! (**D**on't **R**epeat **Y**ourself!) Essentially, you should write methods that prevent you from repeating code.
+            https://www.geeksforgeeks.org/dry-dont-repeat-yourself-principle-in-java-with-examples/#
 
 auto-actions:
   - media:
