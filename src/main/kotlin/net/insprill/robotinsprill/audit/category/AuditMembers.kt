@@ -1,5 +1,6 @@
 package net.insprill.robotinsprill.audit.category
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.event.guild.BanAddEvent
 import dev.kord.core.event.guild.BanRemoveEvent
 import dev.kord.core.event.guild.MemberJoinEvent
@@ -12,26 +13,28 @@ import net.insprill.robotinsprill.audit.AuditManager
 
 class AuditMembers(robot: RobotInsprill, audit: AuditManager) : AuditCategory(robot, audit) {
 
+    private val voiceChannels: MutableMap<Snowflake, Snowflake> = HashMap()
+
     override fun registerEvents() {
         val config = robot.config.audit.events.members
         event<BanAddEvent>(config.banned) {
-            if (guildId != robot.config.guildId) return@event;
+            if (guildId != robot.config.guildId) return@event
             send(user, AuditColor.RED, "<@${user.id}> was banned.")
         }
         event<BanRemoveEvent>(config.unbanned) {
-            if (guildId != robot.config.guildId) return@event;
+            if (guildId != robot.config.guildId) return@event
             send(user, AuditColor.GREEN, "<@${user.id}> was unbanned.")
         }
         event<MemberJoinEvent>(config.joined) {
-            if (guildId != robot.config.guildId) return@event;
+            if (guildId != robot.config.guildId) return@event
             send(member, AuditColor.GREEN, "<@${member.id}> has joined.")
         }
         event<MemberLeaveEvent>(config.left) {
-            if (guildId != robot.config.guildId) return@event;
+            if (guildId != robot.config.guildId) return@event
             send(user, AuditColor.RED, "<@${user.id}> has left.")
         }
         event<MemberUpdateEvent>(config.updated.enabled) {
-            if (guildId != robot.config.guildId) return@event;
+            if (guildId != robot.config.guildId) return@event
             if (old == null) {
                 send(member, AuditColor.GREEN, "<@${member.id}> updated their profile!")
             } else {
@@ -60,18 +63,23 @@ class AuditMembers(robot: RobotInsprill, audit: AuditManager) : AuditCategory(ro
 
         }
         event<VoiceStateUpdateEvent>(config.voice) {
-            if (state.guildId != robot.config.guildId) return@event;
+            if (state.guildId != robot.config.guildId) return@event
+            val member = state.getMember()
+            val memberId = member.id
             if (state.channelId == null) {
+                voiceChannels.remove(memberId)
                 send(
-                    state.getMember(),
+                    member,
                     AuditColor.RED,
-                    "<@${state.getMember().id}> has left <#${old?.channelId}>."
+                    "<@${memberId}> has left <#${old?.channelId}>."
                 )
             } else {
+                if (voiceChannels[memberId] == state.channelId) return@event
+                voiceChannels[memberId] = state.channelId!!
                 send(
-                    state.getMember(),
+                    member,
                     AuditColor.GREEN,
-                    "<@${state.getMember().id}> has joined <#${state.channelId}>."
+                    "<@${memberId}> has joined <#${state.channelId}>."
                 )
             }
         }

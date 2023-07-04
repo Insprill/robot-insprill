@@ -704,7 +704,7 @@ audit:
       left: true
       voice: true
       updated:
-        enabled: true
+        enabled: false
         nickname: true
         username: true
         avatar: true
