@@ -45,7 +45,7 @@ class AuditManager(private val robot: RobotInsprill) {
 
     private suspend fun sendMessage(embed: EmbedBuilder.() -> Unit) {
         channelCache.getOrPut(robot.config.guildId) {
-            robot.kord.getGuildOrThrow(robot.config.guildId)
+            robot.kord.getGuild(robot.config.guildId)
                 .getChannel(robot.config.audit.auditChannel) as MessageChannel
         }.createEmbed(embed)
     }
@@ -58,8 +58,8 @@ class AuditManager(private val robot: RobotInsprill) {
     ): EmbedBuilder.() -> Unit {
         return {
             author {
-                name = user.tag
-                icon = user.avatar?.url
+                name = user.username
+                icon = user.avatar?.cdnUrl?.toUrl()
             }
             this.color = color.color
             this.description = "**$title**"

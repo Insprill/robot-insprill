@@ -40,23 +40,20 @@ class AuditMembers(robot: RobotInsprill, audit: AuditManager) : AuditCategory(ro
             } else {
                 var desc = ""
                 val old = old!! // Already checked to be non-null
-                if (config.updated.nickname && old.nickname != member.nickname) {
-                    desc += "**Nickname Updated**\n${old.displayName} -> ${member.displayName}\n\n"
+                if (config.updated.nickname && old.effectiveName != member.effectiveName) {
+                    desc += "**Nickname Updated**\n${old.effectiveName} -> ${member.effectiveName}\n\n"
                 }
                 if (config.updated.username && old.username != member.username) {
                     desc += "**Name Updated**\n${old.username} -> ${member.username}\n\n"
                 }
-                if (config.updated.avatar && old.avatar?.url != member.avatar?.url) {
-                    desc += "**Avatar Updated**\n${old.avatar?.url} -> ${member.avatar?.url}\n\n"
+                if (config.updated.avatar && old.avatar?.cdnUrl?.toUrl() != member.avatar?.cdnUrl?.toUrl()) {
+                    desc += "**Avatar Updated**\n${old.avatar?.cdnUrl?.toUrl()} -> ${member.avatar?.cdnUrl?.toUrl()}\n\n"
                 }
-                if (config.updated.memberAvatar && old.memberAvatar?.url != member.memberAvatar?.url) {
-                    desc += "**Member Avatar Updated**\n${old.memberAvatar?.url} -> ${member.memberAvatar?.url}\n\n"
+                if (config.updated.memberAvatar && old.memberAvatar?.cdnUrl?.toUrl() != member.memberAvatar?.cdnUrl?.toUrl()) {
+                    desc += "**Member Avatar Updated**\n${old.memberAvatar?.cdnUrl?.toUrl()} -> ${member.memberAvatar?.cdnUrl?.toUrl()}\n\n"
                 }
                 if (config.updated.banner && old.data.banner != member.data.banner) {
                     desc += "**Member Avatar Updated**\n${old.data.banner} -> ${member.data.banner}\n\n"
-                }
-                if (config.updated.discriminator && old.data.discriminator != member.discriminator) {
-                    desc += "**Discriminator Updated**\n${old.data.discriminator} -> ${member.data.discriminator}\n\n"
                 }
                 send(member, AuditColor.GREEN, "<@${member.id}> updated their profile!", desc.trim())
             }

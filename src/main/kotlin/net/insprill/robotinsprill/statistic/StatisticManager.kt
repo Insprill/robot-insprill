@@ -2,13 +2,13 @@ package net.insprill.robotinsprill.statistic
 
 import dev.kord.core.behavior.channel.edit
 import dev.kord.core.entity.channel.VoiceChannel
-import kotlin.concurrent.timer
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import net.insprill.robotinsprill.RobotInsprill
+import kotlin.concurrent.timer
 
 class StatisticManager(private val robot: RobotInsprill) {
 

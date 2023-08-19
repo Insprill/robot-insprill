@@ -8,11 +8,11 @@ import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.integer
-import java.lang.Long.min
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.flow.toList
 import net.insprill.robotinsprill.RobotInsprill
+import java.lang.Long.min
 
 class Clear(private val robot: RobotInsprill) : SlashCommand() {
 

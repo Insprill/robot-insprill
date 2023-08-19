@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.8.20"
-    kotlin("plugin.serialization") version "1.8.20"
+    kotlin("jvm") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "1.3.1"
     id("org.ajoberstar.grgit") version "5.0.0"
@@ -15,12 +15,12 @@ repositories {
 
 dependencies {
     // Discord
-    implementation("dev.kord:kord-core:0.8.3")
+    implementation("dev.kord:kord-core-jvm:0.10.0")
 
     // Configuration
-    implementation("com.sksamuel.hoplite:hoplite-core:2.7.3")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:2.7.3")
-    implementation("com.sksamuel.hoplite:hoplite-datetime:2.7.3")
+    implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.7.5")
+    implementation("com.sksamuel.hoplite:hoplite-datetime:2.7.5")
 
     // Web requests
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
@@ -31,7 +31,7 @@ dependencies {
     implementation("org.bytedeco:tesseract-platform:5.2.0-1.5.8")
 
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.4.7")
+    implementation("ch.qos.logback:logback-classic:1.4.11")
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 }
 

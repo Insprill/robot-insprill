@@ -4,11 +4,11 @@ import dev.kord.core.behavior.reply
 import dev.kord.core.entity.Message
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
-import java.util.EnumSet
 import kotlinx.coroutines.delay
 import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.configuration.BotConfig
 import net.insprill.robotinsprill.extension.message
+import java.util.EnumSet
 
 class RestrictionManager(val robot: RobotInsprill) {
 

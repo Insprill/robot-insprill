@@ -5,14 +5,12 @@ import com.sksamuel.hoplite.ExperimentalHoplite
 import com.sksamuel.hoplite.addFileSource
 import com.sksamuel.hoplite.fp.getOrElse
 import dev.kord.core.Kord
+import dev.kord.core.cache.lruCache
 import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.on
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
-import java.io.File
-import java.nio.file.Files
-import kotlin.system.exitProcess
 import mu.KLogger
 import mu.KotlinLogging
 import net.insprill.robotinsprill.audit.AuditManager
@@ -30,6 +28,9 @@ import net.insprill.robotinsprill.form.FormHandle
 import net.insprill.robotinsprill.ocr.Tesseract
 import net.insprill.robotinsprill.restriction.RestrictionManager
 import net.insprill.robotinsprill.statistic.StatisticManager
+import java.io.File
+import java.nio.file.Files
+import kotlin.system.exitProcess
 
 suspend fun main() {
     val logger = KotlinLogging.logger("Robot Insprill")
@@ -124,7 +125,7 @@ class RobotInsprill(val logger: KLogger, val kord: Kord) {
     suspend fun registerLoginEvents() = apply {
         kord.on<ReadyEvent> {
             StatisticManager(this@RobotInsprill).start(3600 * 1000)
-            logger.info("Logged into {}", kord.getSelf().tag)
+            logger.info("Logged into {}", kord.getSelf().username)
         }
     }
 

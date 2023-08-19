@@ -9,8 +9,8 @@ import com.sksamuel.hoplite.decoder.NullHandlingDecoder
 import com.sksamuel.hoplite.fp.Validated
 import com.sksamuel.hoplite.fp.invalid
 import dev.kord.common.Color
-import kotlin.reflect.KType
 import net.insprill.robotinsprill.extension.color
+import kotlin.reflect.KType
 
 class ColorDecoder : NullHandlingDecoder<Color> {
 
