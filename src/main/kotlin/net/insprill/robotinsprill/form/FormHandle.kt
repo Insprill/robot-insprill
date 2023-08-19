@@ -24,15 +24,15 @@ import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.create.embed
 import dev.kord.rest.request.KtorRequestException
+import kotlinx.datetime.Clock
+import net.insprill.robotinsprill.RobotInsprill
+import net.insprill.robotinsprill.configuration.BotConfig
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.Arrays
 import java.util.Collections
 import java.util.function.Function
 import kotlin.math.roundToInt
-import kotlinx.datetime.Clock
-import net.insprill.robotinsprill.RobotInsprill
-import net.insprill.robotinsprill.configuration.BotConfig
 
 class FormHandle(val robot: RobotInsprill) {
 
@@ -104,7 +104,7 @@ class FormHandle(val robot: RobotInsprill) {
 
         when (component.customId) {
             "abandon" -> try {
-                interaction.message.delete("Abandoned by ${interaction.user.tag}")
+                interaction.message.delete("Abandoned by ${interaction.user.username}")
             } catch (ignored: KtorRequestException) {
             }
 
@@ -197,11 +197,11 @@ class FormHandle(val robot: RobotInsprill) {
             if (invalids.isEmpty()) {
                 title = textInputs[titleId]?.data?.value?.value
                     ?: textInputs.values.firstOrNull()?.data?.value?.value
-                        ?: "Submission by ${user.tag}" // Kotlin :O
+                        ?: "Submission by ${user.username}" // Kotlin :O
 
                 author = EmbedBuilder.Author().apply {
-                    name = user.tag
-                    icon = user.avatar?.url
+                    name = user.username
+                    icon = user.avatar?.cdnUrl?.toUrl()
                 }
             } else title = "Your form (pls fix)"
 
@@ -209,7 +209,7 @@ class FormHandle(val robot: RobotInsprill) {
 
             footer = EmbedBuilder.Footer().apply {
                 text = "${user.id}"
-                icon = avatar.url
+                icon = avatar.cdnUrl.toUrl()
             }
 
             for (field in form.getDisplayFields()) {
