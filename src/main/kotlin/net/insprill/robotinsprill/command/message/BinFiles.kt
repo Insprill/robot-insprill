@@ -2,7 +2,7 @@ package net.insprill.robotinsprill.command.message
 
 import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
-import dev.kord.rest.builder.message.modify.embed
+import dev.kord.rest.builder.message.embed
 import io.ktor.util.logging.error
 import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.extension.stringContent

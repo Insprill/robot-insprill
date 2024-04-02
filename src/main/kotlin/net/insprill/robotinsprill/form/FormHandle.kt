@@ -22,7 +22,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.rest.builder.component.ActionRowBuilder
 import dev.kord.rest.builder.message.EmbedBuilder
-import dev.kord.rest.builder.message.create.embed
+import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.KtorRequestException
 import kotlinx.datetime.Clock
 import net.insprill.robotinsprill.RobotInsprill
@@ -76,8 +76,8 @@ class FormHandle(val robot: RobotInsprill) {
         if (invalids.isEmpty()) { // Everything is good to go
             interaction.respondPublic {
                 embed(embed)
-                components.add(buttons)
-                if (inputs != null) components.add(inputs)
+                components?.add(buttons)
+                if (inputs != null) components?.add(inputs)
             }
         } else { // Needs fixing (number is malformed, etc.)
             interaction

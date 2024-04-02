@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     // Discord
-    implementation("dev.kord:kord-core-jvm:0.10.0")
+    implementation("dev.kord:kord-core-jvm:0.13.1")
 
     // Configuration
     implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")

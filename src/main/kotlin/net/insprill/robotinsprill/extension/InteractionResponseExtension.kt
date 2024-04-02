@@ -5,5 +5,5 @@ import net.insprill.robotinsprill.configuration.BotConfig
 
 fun MessageCreateBuilder.message(msg: BotConfig.Message) = apply {
     this.content = msg.text
-    msg.embeds()?.let { this.embeds.addAll(it) }
+    msg.embeds()?.let { this.embeds?.addAll(it) }
 }

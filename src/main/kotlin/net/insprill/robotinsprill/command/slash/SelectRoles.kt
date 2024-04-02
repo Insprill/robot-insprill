@@ -3,13 +3,12 @@ package net.insprill.robotinsprill.command.slash
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.entity.component.StringSelectComponent
-import dev.kord.core.entity.component.options
 import dev.kord.core.entity.interaction.GuildSelectMenuInteraction
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.GuildSelectMenuInteractionCreateEvent
 import dev.kord.core.on
 import dev.kord.rest.builder.component.option
-import dev.kord.rest.builder.message.create.actionRow
+import dev.kord.rest.builder.message.actionRow
 import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.extension.message
 
