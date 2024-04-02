@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "1.9.0"
-    kotlin("plugin.serialization") version "1.9.0"
+    kotlin("jvm") version "1.9.20"
+    kotlin("plugin.serialization") version "1.9.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "1.3.1"
-    id("org.ajoberstar.grgit") version "5.0.0"
+    id("org.ajoberstar.grgit") version "5.2.2"
 }
 
 group = "net.insprill"
@@ -31,13 +31,13 @@ dependencies {
     implementation("org.bytedeco:tesseract-platform:5.2.0-1.5.8")
 
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.4.11")
-    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+    implementation("ch.qos.logback:logback-classic:1.5.3")
+    implementation("io.github.oshai:kotlin-logging-jvm:6.0.3")
 }
 
 tasks {
     kotlin {
-        jvmToolchain(17)
+        jvmToolchain(21)
     }
 
     jar {
