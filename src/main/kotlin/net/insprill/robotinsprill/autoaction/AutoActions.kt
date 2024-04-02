@@ -30,7 +30,7 @@ class AutoActions(private val robot: RobotInsprill) {
                 string.any { action.pattern.containsMatchIn(it) }
             }
             .forEach { (action, _) ->
-                Action.values().forEach { it.process(message, action) }
+                Action.entries.forEach { it.process(message, action) }
             }
     }
 
