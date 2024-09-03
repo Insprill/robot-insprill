@@ -76,7 +76,7 @@ class FormHandle(val robot: RobotInsprill) {
         if (invalids.isEmpty()) { // Everything is good to go
             interaction.respondPublic {
                 embed(embed)
-                components?.add(buttons)
+                components = mutableListOf(buttons)
                 if (inputs != null) components?.add(inputs)
             }
         } else { // Needs fixing (number is malformed, etc.)

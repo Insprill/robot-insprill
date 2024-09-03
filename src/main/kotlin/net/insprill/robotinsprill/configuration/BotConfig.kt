@@ -114,7 +114,7 @@ data class BotConfig(
         fun toBuilder(): MessageCreateBuilder.() -> Unit {
             return {
                 content = text
-                if (!embeds.isNullOrEmpty()) embeds?.addAll(embeds()!!)
+                embeds = embeds()!!.toMutableList()
             }
         }
 
