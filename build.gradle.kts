@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.serialization") version "1.9.20"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.0"
     id("net.kyori.blossom") version "1.3.1"
     id("org.ajoberstar.grgit") version "5.2.2"
 }
@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     // Discord
-    implementation("dev.kord:kord-core-jvm:0.13.1")
+    implementation("dev.kord:kord-core-jvm:0.14.0")
 
     // Configuration
     implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
@@ -31,8 +31,8 @@ dependencies {
     implementation("org.bytedeco:tesseract-platform:5.2.0-1.5.8")
 
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.5.3")
-    implementation("io.github.oshai:kotlin-logging-jvm:6.0.3")
+    implementation("ch.qos.logback:logback-classic:1.5.7")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
 }
 
 tasks {
