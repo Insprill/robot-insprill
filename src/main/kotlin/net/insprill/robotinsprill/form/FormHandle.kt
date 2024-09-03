@@ -28,7 +28,7 @@ import kotlinx.datetime.Clock
 import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.configuration.BotConfig
 import java.net.MalformedURLException
-import java.net.URL
+import java.net.URI
 import java.util.Arrays
 import java.util.Collections
 import java.util.function.Function
@@ -189,7 +189,7 @@ class FormHandle(val robot: RobotInsprill) {
             if (imageField != null) {
                 val raw = textInputs[imageField.name]?.value ?: ""
                 if (raw.isNotBlank()) try {
-                    image = URL(raw).toString()
+                    image = URI.create(raw).toURL().toString()
                 } catch (ignored: MalformedURLException) {
                 }
             }
