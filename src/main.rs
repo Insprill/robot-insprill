@@ -1,12 +1,14 @@
 use std::env;
 
-use serenity::async_trait;
-use serenity::model::gateway::Ready;
-use serenity::prelude::*;
+use crate::command::binfile::binfile;
+use poise::serenity_prelude as serenity;
+use serenity::all::Ready;
+use serenity::prelude::{Context, EventHandler, GatewayIntents};
+use serenity::{async_trait, Client};
 use tracing::{error, info};
 
 pub mod command;
-
+pub struct Data {}
 pub struct Handler;
 
 #[async_trait]
@@ -23,12 +25,26 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     let token = env::var("DISCORD_TOKEN").expect("env variable `DISCORD_TOKEN` should be set");
+    let guild_id = serenity::GuildId::new(env::var("GUILD_ID").expect("GUILD_ID env variable should be set").parse::<u64>().expect("Guild ID is not valid"));
 
     let intents = GatewayIntents::GUILD_MESSAGES | GatewayIntents::MESSAGE_CONTENT;
 
+    let framework = poise::Framework::builder()
+        .options(poise::FrameworkOptions {
+            commands: vec![binfile()],
+            ..Default::default()
+        })
+        .setup(move |ctx, _ready, framework| {
+            Box::pin(async move {
+                poise::builtins::register_in_guild(ctx, &framework.options().commands, guild_id).await?;
+                Ok(Data {})
+            })
+        })
+        .build();
+
     let mut client = Client::builder(&token, intents)
         .event_handler(Handler)
-        .event_handler(command::Handler)
+        .framework(framework)
         .await
         .expect("Err creating client");
 
@@ -40,7 +56,7 @@ async fn main() {
         tokio::signal::ctrl_c()
             .await
             .expect("Could not register ctrl+c handler");
-        shard_manager.lock().await.shutdown_all().await;
+        shard_manager.shutdown_all().await;
     });
 
     if let Err(why) = client.start().await {

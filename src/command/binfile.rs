@@ -1,12 +1,10 @@
-use serenity::builder::CreateApplicationCommand;
-use serenity::model::prelude::interaction::application_command::CommandDataOption;
+use crate::Data;
+use serenity::Error;
 
-pub fn run(_options: &[CommandDataOption]) -> String {
-    "It works!".to_string()
-}
-
-pub fn register(command: &mut CreateApplicationCommand) -> &mut CreateApplicationCommand {
-    command
-        .name("binfile")
-        .description("Uploads file attachments to a bin site")
+type Context<'a> = poise::Context<'a, Data, Error>;
+#[poise::command(slash_command)]
+pub async fn binfile(ctx: Context<'_>) -> Result<(), Error> {
+    let response = "do it work?";
+    ctx.say(response).await?;
+    Ok(())
 }
