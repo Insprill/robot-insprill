@@ -1,0 +1,14 @@
+## Feature Checklist:
+- [ ] Auto Actions
+- [ ] Channel Restrictions
+- [ ] Stat Channels
+- [ ] Forms
+- [ ] Commands
+  - [ ] binfiles
+  - [ ] googleThat
+  - [ ] clear
+  - [ ] select-roles
+  - [ ] custom
+- [ ] Codebin
+- [ ] Audit
+- [ ] 
