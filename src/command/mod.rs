@@ -1,3 +1,3 @@
 pub mod binfile;
-mod clear;
+pub mod clear;
 

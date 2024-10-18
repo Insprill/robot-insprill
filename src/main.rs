@@ -6,6 +6,7 @@ use serenity::all::Ready;
 use serenity::prelude::{Context, EventHandler, GatewayIntents};
 use serenity::{async_trait, Client};
 use tracing::{error, info};
+use crate::command::clear::clear;
 
 pub mod command;
 pub struct Data {}
@@ -31,7 +32,7 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![binfile()],
+            commands: vec![binfile(), clear()],
             ..Default::default()
         })
         .setup(move |ctx, _ready, framework| {
