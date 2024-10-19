@@ -19,7 +19,7 @@ pub async fn clear(
         return Ok(());
     }
 
-    let mut count = amount.unwrap_or(0);
+    let count = amount.unwrap_or(0);
     let deleted = count;
 
     let fetch_count = count.min(100);
