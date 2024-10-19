@@ -7,42 +7,68 @@ env:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
-            suffix: ''
-            name: macOS
-          - os: ubuntu-latest
-            suffix: ''
-            name: Linux
-          - os: windows-latest
-            suffix: .exe
-            name: Windows
+          # x86_64
+          - target: 'x86_64-pc-windows-msvc'
+            os: windows
+          - target: 'x86_64-unknown-linux-gnu'
+            os: ubuntu
+          - target: 'x86_64-unknown-linux-musl'
+            os: ubuntu
+          # aarch64 (armv8)
+          - target: 'aarch64-unknown-linux-gnu'
+            os: ubuntu
+          - target: 'aarch64-unknown-linux-musl'
+            os: ubuntu
+          # armv7
+          - target: 'armv7-unknown-linux-gnueabihf'
+            os: ubuntu
+          - target: 'armv7-unknown-linux-musleabihf'
+            os: ubuntu
+          # armv6
+          - target: 'arm-unknown-linux-gnueabihf'
+            os: ubuntu
+          - target: 'arm-unknown-linux-musleabihf'
+            os: ubuntu
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: clippy
+      - name: Install Cross
+        run: cargo install --git https://github.com/cross-rs/cross cross
 
       - name: Setup Cache
         uses: Swatinem/rust-cache@v2
-        with:
-          key: ${{ matrix.name }}
 
-      - name: Check Code Style
-        run: cargo clippy -- -D warnings
-
+      # cross doesn't support msvc toolchains out-of-the-box (https://github.com/cross-rs/cross-toolchains)
       - name: Build
-        run: cargo build --release
+        if: matrix.os == 'windows'
+        run: ${{ matrix.os == 'windows' && 'cargo' || 'cross' }} build --release --target=${{ matrix.target }}
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Robot-Insprill-${{ matrix.name }}
-          path: target/release/robot-insprill${{ matrix.suffix }}
+          name: bitbin-${{ matrix.target }}
+          if-no-files-found: ignore
+          path: |
+            target/${{ matrix.target }}/release/bitbin
+            target/${{ matrix.target }}/release/bitbin.exe
+
+  code-style:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check rustfmt
+        run: cargo fmt --all -- --check
+
+      - name: Check Clippy
+        run: cargo clippy -- -D warnings

@@ -1,0 +1,10 @@
+services:
+  bitbin:
+    build: .
+    # image: insprill/bitbin:latest # Switch to 'develop' to use the latest git version. May be unstable!
+    restart: always
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
