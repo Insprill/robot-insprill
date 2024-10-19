@@ -47,7 +47,6 @@ jobs:
 
       # cross doesn't support msvc toolchains out-of-the-box (https://github.com/cross-rs/cross-toolchains)
       - name: Build
-        if: matrix.os == 'windows'
         run: ${{ matrix.os == 'windows' && 'cargo' || 'cross' }} build --release --target=${{ matrix.target }}
 
       - name: Upload Artifact
