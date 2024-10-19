@@ -6,7 +6,7 @@
 - [ ] Commands
   - [ ] binfiles
   - [ ] googleThat
-  - [ ] clear
+  - [x] clear
   - [ ] select-roles
   - [ ] custom
 - [ ] Codebin
