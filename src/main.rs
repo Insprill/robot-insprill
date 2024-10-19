@@ -1,12 +1,12 @@
 use std::env;
 
 use crate::command::binfile::binfile;
+use crate::command::clear::clear;
 use poise::serenity_prelude as serenity;
 use serenity::all::Ready;
 use serenity::prelude::{Context, EventHandler, GatewayIntents};
 use serenity::{async_trait, Client};
 use tracing::{error, info};
-use crate::command::clear::clear;
 
 pub mod command;
 pub struct Data {}
@@ -26,7 +26,12 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     let token = env::var("DISCORD_TOKEN").expect("env variable `DISCORD_TOKEN` should be set");
-    let guild_id = serenity::GuildId::new(env::var("GUILD_ID").expect("GUILD_ID env variable should be set").parse::<u64>().expect("Guild ID is not valid"));
+    let guild_id = serenity::GuildId::new(
+        env::var("GUILD_ID")
+            .expect("GUILD_ID env variable should be set")
+            .parse::<u64>()
+            .expect("Guild ID is not valid"),
+    );
 
     let intents = GatewayIntents::GUILD_MESSAGES | GatewayIntents::MESSAGE_CONTENT;
 
@@ -37,7 +42,8 @@ async fn main() {
         })
         .setup(move |ctx, _ready, framework| {
             Box::pin(async move {
-                poise::builtins::register_in_guild(ctx, &framework.options().commands, guild_id).await?;
+                poise::builtins::register_in_guild(ctx, &framework.options().commands, guild_id)
+                    .await?;
                 Ok(Data {})
             })
         })
