@@ -10,6 +10,7 @@ type PrefixContext<'a> = poise::PrefixContext<'a, Data, Error>;
 #[poise::command(prefix_command)]
 pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
     let file_message = &ctx.msg.referenced_message;
+    let typing = ctx.serenity_context.http.start_typing(ctx.channel_id());
 
     let files: Vec<Attachment> = match file_message {
         None => {
@@ -40,7 +41,7 @@ pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
             }
         };
     }
-
+    typing.stop();
     ctx.say(urls.join("\n")).await?;
     Ok(())
 }
