@@ -13,25 +13,33 @@ pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
 
     let files: Vec<Attachment> = match file_message {
         None => {
-            ctx.say("Reply to a message with an attatchment to create a codebin.").await?;
+            ctx.say("Reply to a message with an attatchment to create a codebin.")
+                .await?;
             return Ok(());
         }
         Some(message) => message.deref().attachments.clone(),
     };
     let service = BinService::LuckoPaste;
     let client = Client::new();
-    let mut urls: Vec<String> = Vec::new(); 
-    
+    let mut urls: Vec<String> = Vec::new();
+
     for file in files {
         let download = file.download().await?;
-        let Ok(data) = String::from_utf8(download) else { return Ok(()) };
-        
-        match service.upload_bin("paste.insprill.net", &data, &client).await {
+        let Ok(data) = String::from_utf8(download) else {
+            return Ok(());
+        };
+
+        match service
+            .upload_bin("paste.insprill.net", &data, &client)
+            .await
+        {
             Ok(url) => urls.push(url),
-            Err(_) => { ctx.say("Failed to upload attachment to bin!").await?; }
+            Err(_) => {
+                ctx.say("Failed to upload attachment to bin!").await?;
+            }
         };
     }
-    
+
     ctx.say(urls.join("\n")).await?;
     Ok(())
 }
