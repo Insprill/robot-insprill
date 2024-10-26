@@ -1,0 +1,17 @@
+# Built in command configuration
+builtins:
+  clear: true
+
+codebin:
+  upload: LUCKO_PASTE
+  services:
+    HASTEBIN_LEGACY:
+        - paste.md-5.net
+        - paste.helpch.at
+    SOURCE_BIN:
+      - sourceb.in
+    LUCKO_PASTE:
+      - paste.insprill.net
+    PASTEBIN:
+      - pastebin.com
+  
