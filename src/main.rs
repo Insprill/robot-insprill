@@ -1,8 +1,8 @@
 use std::env;
 
-use crate::command::binfile::binfile;
+use crate::command::binfile::binfiles;
 use crate::command::clear::clear;
-use poise::serenity_prelude as serenity;
+use poise::{serenity_prelude as serenity, PrefixFrameworkOptions};
 use serenity::all::Ready;
 use serenity::prelude::{Context, EventHandler, GatewayIntents};
 use serenity::{async_trait, Client};
@@ -37,7 +37,12 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![binfile(), clear()],
+            commands: vec![binfiles(), clear()],
+            prefix_options: PrefixFrameworkOptions {
+                prefix: Some("!".into()),
+                case_insensitive_commands: true,
+                ..Default::default()
+            },
             ..Default::default()
         })
         .setup(move |ctx, _ready, framework| {
