@@ -26,6 +26,7 @@ pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
     for file in files {
         let download = file.download().await?;
         let Ok(data) = String::from_utf8(download) else {
+            ctx.say("File does not contain valid utf-8!").await?;
             return Ok(());
         };
 
