@@ -18,7 +18,7 @@ pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
                 .await?;
             return Ok(());
         }
-        Some(message) => message.deref().attachments.clone(),
+        Some(message) => message.attachments.clone(),
     };
     let service = BinService::LuckoPaste;
     let client = Client::new();
