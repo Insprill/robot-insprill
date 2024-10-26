@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use serenity::all::Attachment;
 use serenity::Error;
 use std::env;
-use std::ops::Deref;
 
 type PrefixContext<'a> = poise::PrefixContext<'a, Data, Error>;
 #[poise::command(prefix_command)]
@@ -46,7 +45,8 @@ pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
     Ok(())
 }
 
-enum BinService {
+#[derive(Deserialize, Clone, Debug, Eq, PartialEq, Hash)]
+pub enum BinService {
     HastebinLegacy,
     LuckoPaste,
     Pastebin,
