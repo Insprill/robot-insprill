@@ -1,15 +1,20 @@
-use std::env;
-
 use crate::command::binfile::binfiles;
 use crate::command::clear::clear;
+use crate::config::Config;
 use poise::{serenity_prelude as serenity, PrefixFrameworkOptions};
 use serenity::all::Ready;
 use serenity::prelude::{Context, EventHandler, GatewayIntents};
 use serenity::{async_trait, Client};
+use std::env::current_dir;
+use std::{env, fs};
 use tracing::{error, info};
 
 pub mod command;
-pub struct Data {}
+mod config;
+
+pub struct Data {
+    pub config: Config,
+}
 pub struct Handler;
 
 #[async_trait]
@@ -35,6 +40,12 @@ async fn main() {
 
     let intents = GatewayIntents::GUILD_MESSAGES | GatewayIntents::MESSAGE_CONTENT;
 
+    // Load config
+    let config_path = env::var("CONFIG_FILE").expect("env variable CONFIG_FILE must be set!");
+    let config: Config =
+        serde_yaml::from_str(&fs::read_to_string(config_path).expect("Error reading config file"))
+            .expect("Error deserializing config file!");
+
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             commands: vec![binfiles(), clear()],
@@ -49,7 +60,7 @@ async fn main() {
             Box::pin(async move {
                 poise::builtins::register_in_guild(ctx, &framework.options().commands, guild_id)
                     .await?;
-                Ok(Data {})
+                Ok(Data { config })
             })
         })
         .build();

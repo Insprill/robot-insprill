@@ -1,9 +1,11 @@
 # Built in command configuration
 builtins:
   clear: true
-
+  binfiles:
+    enabled: true
+    upload: LUCKO_PASTE
+    
 codebin:
-  upload: LUCKO_PASTE
   services:
     HASTEBIN_LEGACY:
         - paste.md-5.net
