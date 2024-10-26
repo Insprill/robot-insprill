@@ -10,7 +10,7 @@ type PrefixContext<'a> = poise::PrefixContext<'a, Data, Error>;
 pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
     let file_message = &ctx.msg.referenced_message;
     let typing = ctx.serenity_context.http.start_typing(ctx.channel_id());
-
+    
     let files: Vec<Attachment> = match file_message {
         None => {
             ctx.say("Reply to a message with an attatchment to create a codebin.")
@@ -19,7 +19,7 @@ pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
         }
         Some(message) => message.attachments.clone(),
     };
-    let service = BinService::LuckoPaste;
+    let service = BinService::LUCKO_PASTE;
     let client = Client::new();
     let mut urls: Vec<String> = Vec::new();
 
@@ -47,41 +47,41 @@ pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
 
 #[derive(Deserialize, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum BinService {
-    HastebinLegacy,
-    LuckoPaste,
-    Pastebin,
-    SourceBin,
+    HASTEBIN_LEGACY,
+    LUCKO_PASTE,
+    PASTEBIN,
+    SOURCE_BIN,
 }
 
 impl BinService {
     const fn download_url(&self) -> &'static str {
         match self {
-            Self::HastebinLegacy | Self::Pastebin => "https://{}/raw/{}",
-            Self::LuckoPaste => "https://{}/data/{}",
-            Self::SourceBin => "https://cdn.{}/bins/{}",
+            Self::HASTEBIN_LEGACY | Self::PASTEBIN => "https://{}/raw/{}",
+            Self::LUCKO_PASTE => "https://{}/data/{}",
+            Self::SOURCE_BIN => "https://cdn.{}/bins/{}",
         }
     }
 
     const fn key_pattern(&self) -> &'static str {
         match self {
-            Self::HastebinLegacy => "[a-z]+",
-            Self::LuckoPaste => "[a-zA-Z0-9]+",
-            Self::Pastebin => "[a-zA-Z0-9]{5,10}",
-            Self::SourceBin => "[a-zA-Z0-9]{10}",
+            Self::HASTEBIN_LEGACY => "[a-z]+",
+            Self::LUCKO_PASTE => "[a-zA-Z0-9]+",
+            Self::PASTEBIN => "[a-zA-Z0-9]{5,10}",
+            Self::SOURCE_BIN => "[a-zA-Z0-9]{10}",
         }
     }
 
     fn upload_bin_req(&self, domain: &str, data: &str, client: &Client) -> reqwest::RequestBuilder {
         match self {
-            Self::HastebinLegacy => {
+            Self::HASTEBIN_LEGACY => {
                 let url = format!("https://{domain}/documents");
                 client.post(&url).body(data.to_string())
             }
-            Self::LuckoPaste => {
+            Self::LUCKO_PASTE => {
                 let url = format!("https://{domain}/data/post");
                 client.post(&url).body(data.to_string())
             }
-            Self::Pastebin => {
+            Self::PASTEBIN => {
                 let api_key = env::var("PASTEBIN_API_KEY").unwrap_or_default();
                 let encoded_key = urlencoding::encode(&api_key);
                 let encoded_body = urlencoding::encode(data);
@@ -94,7 +94,7 @@ impl BinService {
                     "application/x-www-form-urlencoded; charset=utf-8",
                 )
             }
-            Self::SourceBin => {
+            Self::SOURCE_BIN => {
                 let files = vec![SourceBinRequestFile {
                     name: String::new(),
                     content: data.to_string(),
@@ -111,7 +111,7 @@ impl BinService {
         data: &str,
         client: &Client,
     ) -> Result<String, reqwest::Error> {
-        if matches!(self, Self::Pastebin) {
+        if matches!(self, Self::PASTEBIN) {
             let req = self.upload_bin_req(domain, data, client);
             let res = req.send().await?;
             let text = res.text().await?;
