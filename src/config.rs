@@ -11,7 +11,7 @@ pub struct Config {
 #[derive(Deserialize, Debug, Clone)]
 pub struct Builtins {
     pub clear: bool,
-    pub binfiles: BinfilesConfig
+    pub binfiles: BinfilesConfig,
 }
 
 #[derive(Deserialize, Debug, Clone)]

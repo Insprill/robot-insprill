@@ -10,7 +10,7 @@ type PrefixContext<'a> = poise::PrefixContext<'a, Data, Error>;
 pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
     let file_message = &ctx.msg.referenced_message;
     let typing = ctx.serenity_context.http.start_typing(ctx.channel_id());
-    
+
     let files: Vec<Attachment> = match file_message {
         None => {
             ctx.say("Reply to a message with an attatchment to create a codebin.")
@@ -44,7 +44,7 @@ pub async fn binfiles(ctx: PrefixContext<'_>) -> Result<(), Error> {
     ctx.say(urls.join("\n")).await?;
     Ok(())
 }
-
+#[allow(non_camel_case_types)]
 #[derive(Deserialize, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum BinService {
     HASTEBIN_LEGACY,
@@ -54,6 +54,7 @@ pub enum BinService {
 }
 
 impl BinService {
+    #[allow(dead_code)]
     const fn download_url(&self) -> &'static str {
         match self {
             Self::HASTEBIN_LEGACY | Self::PASTEBIN => "https://{}/raw/{}",
@@ -62,6 +63,7 @@ impl BinService {
         }
     }
 
+    #[allow(dead_code)]
     const fn key_pattern(&self) -> &'static str {
         match self {
             Self::HASTEBIN_LEGACY => "[a-z]+",

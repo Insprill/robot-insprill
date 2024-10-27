@@ -5,7 +5,6 @@ use poise::{serenity_prelude as serenity, PrefixFrameworkOptions};
 use serenity::all::Ready;
 use serenity::prelude::{Context, EventHandler, GatewayIntents};
 use serenity::{async_trait, Client};
-use std::env::current_dir;
 use std::{env, fs};
 use tracing::{error, info};
 
