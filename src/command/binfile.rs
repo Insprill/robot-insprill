@@ -1,8 +1,8 @@
 use crate::Data;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use serenity::all::Attachment;
 use serenity::Error;
+use serenity::all::Attachment;
 use std::env;
 
 type PrefixContext<'a> = poise::PrefixContext<'a, Data, Error>;

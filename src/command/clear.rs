@@ -1,6 +1,6 @@
 use crate::Data;
-use serenity::all::{GetMessages, MessageId};
 use serenity::Error;
+use serenity::all::{GetMessages, MessageId};
 
 type Context<'a> = poise::Context<'a, Data, Error>;
 #[poise::command(slash_command)]

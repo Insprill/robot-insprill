@@ -1,10 +1,10 @@
 use crate::command::binfile::binfiles;
 use crate::command::clear::clear;
 use crate::config::Config;
-use poise::{serenity_prelude as serenity, PrefixFrameworkOptions};
+use poise::{PrefixFrameworkOptions, serenity_prelude as serenity};
 use serenity::all::Ready;
 use serenity::prelude::{Context, EventHandler, GatewayIntents};
-use serenity::{async_trait, Client};
+use serenity::{Client, async_trait};
 use std::{env, fs};
 use tracing::{error, info};
 
