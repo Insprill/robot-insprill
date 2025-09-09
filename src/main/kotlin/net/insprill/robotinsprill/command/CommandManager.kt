@@ -28,13 +28,13 @@ class CommandManager(private val robot: RobotInsprill) {
                 input(command.name, command.description) { command.setup(this) }
                 slashCommands[command.name] = command
             }
-            robot.logger.info("Registered ${slashCommands.size} slash commands")
+            robot.logger.info { "Registered ${slashCommands.size} slash commands" }
 
             mCommands.filter { it.enabled }.forEach { command ->
                 message(command.name) { command.setup(this) }
                 messageCommands[command.name] = command
             }
-            robot.logger.info("Registered ${messageCommands.size} message commands")
+            robot.logger.info { "Registered ${messageCommands.size} message commands" }
         }.collect()
     }
 

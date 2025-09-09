@@ -3,7 +3,6 @@ package net.insprill.robotinsprill.command.message
 import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kord.rest.builder.message.embed
-import io.ktor.util.logging.error
 import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.extension.stringContent
 
@@ -31,12 +30,12 @@ class BinFiles(private val robot: RobotInsprill) : MessageCommand() {
             bins[attachment.filename] = attachment.stringContent().fold({ content ->
                 robot.config.codebin.upload.uploadBin(robot.config, content)
                     .fold({ url -> url }, { err ->
-                        robot.logger.error(err)
-                        err.message ?: "An error occurred 1"
+                        robot.logger.error(err) { "Failed to upload bin" }
+                        err.message ?: "Failed to upload bin"
                     })
             }, { err ->
-                robot.logger.error(err)
-                err.message ?: "An error occurred 2"
+                robot.logger.error(err) { "Failed to get attachment content" }
+                err.message ?: "Failed to get attachment content"
             })
         }
 

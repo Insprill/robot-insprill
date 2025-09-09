@@ -49,7 +49,7 @@ class Clear(private val robot: RobotInsprill) : SlashCommand() {
 
         // I don't think this is possible, but just in case.
         if (channel !is GuildMessageChannelBehavior) {
-            robot.logger.error("Tried to run clear command in a non-GuildMessageChannelBehavior")
+            robot.logger.error { "Tried to run clear command in a non-GuildMessageChannelBehavior" }
             response.respond { content = "You can't do that here!" }
             return
         }

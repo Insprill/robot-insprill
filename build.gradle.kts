@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "1.9.20"
-    kotlin("plugin.serialization") version "1.9.20"
-    id("com.gradleup.shadow") version "8.3.0"
-    id("net.kyori.blossom") version "1.3.1"
-    id("org.ajoberstar.grgit") version "5.2.2"
+    kotlin("jvm") version "2.2.10"
+    kotlin("plugin.serialization") version "2.2.10"
+    id("com.gradleup.shadow") version "9.1.0"
+    id("net.kyori.blossom") version "2.1.0"
+    id("org.ajoberstar.grgit") version "5.3.3"
 }
 
 group = "net.insprill"
@@ -15,12 +15,12 @@ repositories {
 
 dependencies {
     // Discord
-    implementation("dev.kord:kord-core-jvm:0.14.0")
+    implementation("dev.kord:kord-core-jvm:0.15.0")
 
     // Configuration
-    implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:2.7.5")
-    implementation("com.sksamuel.hoplite:hoplite-datetime:2.7.5")
+    implementation("com.sksamuel.hoplite:hoplite-core:2.9.0")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.9.0")
+    implementation("com.sksamuel.hoplite:hoplite-datetime:2.9.0")
 
     // Web requests
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
@@ -31,8 +31,8 @@ dependencies {
     implementation("org.bytedeco:tesseract-platform:5.2.0-1.5.8")
 
     // Logging
-    implementation("ch.qos.logback:logback-classic:1.5.7")
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
+    implementation("ch.qos.logback:logback-classic:1.5.18")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
 }
 
 tasks {
@@ -59,12 +59,14 @@ tasks {
     }
 }
 
-blossom {
-    val clazz = "src/main/kotlin/net/insprill/robotinsprill/RobotInsprill.kt"
-    fun repl(token: String, value: Any?) {
-        replaceToken("\"{$token}\"", "\"$value\"", clazz)
+sourceSets {
+    main {
+        blossom {
+            javaSources {
+                property("buildVersion", version as String)
+            }
+        }
     }
-    repl("build.version", version)
 }
 
 fun versionMetadata(): String {

@@ -1,7 +1,6 @@
 package net.insprill.robotinsprill.autoaction
 
 import dev.kord.core.entity.Message
-import io.ktor.util.logging.error
 import net.insprill.robotinsprill.RobotInsprill
 import net.insprill.robotinsprill.extension.byteContent
 import net.insprill.robotinsprill.extension.stringContent
@@ -49,7 +48,7 @@ enum class MediaType {
                     contentTypes.any { attachment.contentType?.equals(it) == true }
                 }.mapNotNull { attachment ->
                     val bytes = attachment.byteContent().getOrNull() ?: return@mapNotNull null
-                    Tesseract(bytes).scan().onFailure { robot.logger.error(it) }.getOrNull()?.trim()
+                    Tesseract(bytes).scan().onFailure { robot.logger.error(it) { "Failed to extract text from image" } }.getOrNull()?.trim()
                 }
         }
     },

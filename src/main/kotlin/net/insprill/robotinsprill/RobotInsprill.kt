@@ -11,8 +11,8 @@ import dev.kord.core.on
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
-import mu.KLogger
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import net.insprill.robotinsprill.audit.AuditManager
 import net.insprill.robotinsprill.autoaction.AutoActions
 import net.insprill.robotinsprill.command.CommandManager
@@ -60,34 +60,32 @@ class RobotInsprill(val logger: KLogger, val kord: Kord) {
     val config: BotConfig
 
     init {
-        val metadata = Metadata()
+        logger.info { "Starting Robot Insprill v${BuildParameters.VERSION}" }
 
-        logger.info("Starting Robot Insprill v${metadata.version}")
-
-        logger.info("Searching for configuration file")
+        logger.info { "Searching for configuration file" }
         val defaultConfigFile = File("config.yml")
         val devConfigFile = File("configs/dev.yml")
         val configFileEnv = System.getenv("CONFIG_FILE")
         if (configFileEnv == null && !defaultConfigFile.exists() && devConfigFile.exists()) {
-            logger.info("CONFIG_FILE not set and config.yml not found. Copying development config")
+            logger.info { "CONFIG_FILE not set and config.yml not found. Copying development config" }
             Files.copy(devConfigFile.toPath(), defaultConfigFile.toPath())
         }
         val configFile = configFileEnv ?: defaultConfigFile.name
 
-        logger.info("Parsing configuration file $configFile")
+        logger.info { "Parsing configuration file $configFile" }
         config = ConfigLoaderBuilder.default()
             .addFileSource(File(configFile))
             .flattenArraysToString()
             .build()
             .loadConfig<BotConfig>()
             .getOrElse {
-                logger.error(it.description())
+                logger.error { it.description() }
                 exitProcess(1)
             }
 
-        logger.info("Validating configuration file")
+        logger.info { "Validating configuration file" }
         config.validate()?.let {
-            logger.error(it)
+            logger.error { it }
             exitProcess(1)
         }
 
@@ -95,7 +93,7 @@ class RobotInsprill(val logger: KLogger, val kord: Kord) {
     }
 
     suspend fun registerCommands() = apply {
-        logger.info("Setting up command handlers")
+        logger.info { "Setting up command handlers" }
         commandManager.setupEventHandlers()
         commandManager.registerCommands(
             listOf(
@@ -122,10 +120,11 @@ class RobotInsprill(val logger: KLogger, val kord: Kord) {
         AuditManager(this).setupEventHandlers()
     }
 
-    suspend fun registerLoginEvents() = apply {
+    fun registerLoginEvents() = apply {
         kord.on<ReadyEvent> {
             StatisticManager(this@RobotInsprill).start(3600 * 1000)
-            logger.info("Logged into {}", kord.getSelf().username)
+            val username = kord.getSelf().username
+            logger.info { "Logged into $username" }
         }
     }
 
@@ -135,12 +134,12 @@ class RobotInsprill(val logger: KLogger, val kord: Kord) {
 
     fun initTesseract() = apply {
         Tesseract.exception?.let {
-            logger.error("Failed to initialize Tesseract! OCR functions will not be available.", it)
+            logger.error(it) { "Failed to initialize Tesseract! OCR functions will not be available." }
         }
     }
 
     suspend fun login() {
-        logger.info("Logging in")
+        logger.info { "Logging in" }
         kord.login {
             @OptIn(PrivilegedIntent::class)
             intents += Intent.MessageContent
@@ -154,5 +153,3 @@ class RobotInsprill(val logger: KLogger, val kord: Kord) {
     }
 
 }
-
-data class Metadata(val version: String = "{build.version}")

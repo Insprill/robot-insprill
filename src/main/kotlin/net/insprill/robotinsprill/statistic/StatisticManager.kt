@@ -22,21 +22,21 @@ class StatisticManager(private val robot: RobotInsprill) {
     }
 
     private suspend fun update() {
-        robot.logger.info("Updating statistic channels")
+        robot.logger.info { "Updating statistic channels" }
         robot.config.statisticChannels.forEach {
             val guild = robot.kord.getGuildOrNull(robot.config.guildId)
             if (guild == null) {
-                robot.logger.error("Failed to find guild ${it.channelId}")
+                robot.logger.error { "Failed to find guild ${it.channelId}" }
                 return@forEach
             }
 
             val channel = guild.getChannelOrNull(it.channelId)
             if (channel == null) {
-                robot.logger.error("Failed to find channel ${it.channelId}")
+                robot.logger.error { "Failed to find channel ${it.channelId}" }
                 return@forEach
             }
             if (channel !is VoiceChannel) {
-                robot.logger.error("Channel ${it.channelId} (#${channel.name}) isn't a voice channel!")
+                robot.logger.error { "Channel ${it.channelId} (#${channel.name}) isn't a voice channel!" }
                 return@forEach
             }
 
