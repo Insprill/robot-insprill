@@ -4,7 +4,7 @@ import groovy.lang.Closure
 plugins {
     kotlin("jvm") version "2.2.10"
     kotlin("plugin.serialization") version "2.2.10"
-    id("com.gradleup.shadow") version "9.1.0"
+    id("com.gradleup.shadow") version "8.3.9"
     id("net.kyori.blossom") version "2.1.0"
     id("com.palantir.git-version") version "4.0.0"
 }
