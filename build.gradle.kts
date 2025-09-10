@@ -79,8 +79,10 @@ fun versionMetadata(): String {
         return "+build.${buildId}"
     }
 
-    val versionDetails: Closure<VersionDetails> by extra
-    var id = versionDetails().gitHash
+    if (!file(".git").exists()) {
+        return ""
+    }
+
     val git = (extra["versionDetails"] as Closure<*>)() as VersionDetails
     var id = git.gitHash
 
